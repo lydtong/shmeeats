@@ -1,9 +1,12 @@
-<title>shmeeats</title>
+<!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="claude:viewport-fit-sides" content="cover">
+<title>shmeeats</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='%2337895a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap">
 <style>
 /* layout: one quiet column; the map is the only wide thing. */
 :root {
@@ -24,6 +27,7 @@
   --font: "Nunito", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --radius: 14px;
   --shadow: 0 10px 30px rgba(28, 59, 44, 0.08);
+  color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -49,6 +53,7 @@ body {
 a { color: inherit; }
 button, input, textarea, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
+img { max-width: 100%; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
 .wrap {
   width: 100%; max-width: 1040px; margin: 0 auto;
@@ -81,11 +86,10 @@ footer a { color: var(--ink-soft); }
 .home { text-align: center; padding-block: clamp(32px, 9vh, 96px) 40px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .home .logo { width: min(420px, 82vw); }
 .wordmark { font-size: clamp(2.4rem, 8vw, 4.2rem); font-weight: 500; letter-spacing: -0.02em; margin: 0; line-height: 1; }
-.tagline { margin: 0; color: var(--ink-soft); font-weight: 600; }
 .cta { margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: var(--accent-ink); text-decoration: none; padding: 11px 20px; border-radius: 999px; font-weight: 600; }
 .cta:hover { filter: brightness(1.06); }
 
-/* food */
+/* reviews */
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-block: 8px 12px; }
 .section-head h1 { margin: 0; font-size: 1.6rem; font-weight: 600; letter-spacing: -0.01em; }
 .section-head .count { color: var(--ink-soft); font-weight: 500; }
@@ -138,6 +142,10 @@ footer a { color: var(--ink-soft); }
 @media (max-width: 820px) { .admin-grid { grid-template-columns: minmax(0, 1fr); } }
 .panel { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; min-width: 0; }
 .panel h2 { margin: 0 0 12px; font-size: 1.15rem; font-weight: 600; }
+.setup { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; }
+.setup summary { cursor: pointer; font-weight: 600; }
+.setup p { margin: 8px 0; font-size: 0.9rem; color: var(--ink-soft); }
+.setup ol { margin: 6px 0 10px; padding-left: 20px; font-size: 0.9rem; color: var(--ink-soft); }
 .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
 .field label { font-weight: 600; font-size: 0.85rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.06em; }
 .field .hint { font-size: 0.8rem; color: var(--ink-soft); }
@@ -147,7 +155,9 @@ input[type="text"], input[type="password"], input[type="date"], textarea, select
 textarea { min-height: 90px; resize: vertical; }
 .row { display: flex; gap: 10px; flex-wrap: wrap; }
 .row > * { flex: 1 1 140px; min-width: 0; }
-.btn { border: 0; background: var(--accent); color: var(--accent-ink); padding: 10px 18px; border-radius: 999px; font-weight: 600; }
+.where-row { display: flex; gap: 8px; }
+.where-row input { flex: 1; min-width: 0; }
+.btn { border: 0; background: var(--accent); color: var(--accent-ink); padding: 10px 18px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
 .btn:disabled { opacity: 0.5; cursor: default; }
 .btn.ghost { background: var(--accent-soft); color: var(--ink); }
 .btn.small { padding: 5px 12px; font-size: 0.85rem; }
@@ -166,16 +176,18 @@ textarea { min-height: 90px; resize: vertical; }
 .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 8px; margin-top: 8px; }
 .photo-grid .ph { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: var(--surface-2); }
 .photo-grid img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.photo-grid .x { position: absolute; top: 4px; right: 4px; border: 0; background: var(--surface); color: var(--danger); border-radius: 999px; width: 24px; height: 24px; font-weight: 900; line-height: 1; }
+.photo-grid .x { position: absolute; top: 4px; right: 4px; border: 0; background: var(--surface); color: var(--danger); border-radius: 999px; width: 24px; height: 24px; font-weight: 600; line-height: 1; }
 .admin-list { display: flex; flex-direction: column; gap: 8px; }
 .admin-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; flex-wrap: wrap; }
 .admin-item .n { font-weight: 600; }
 .admin-item .s { color: var(--ink-soft); font-size: 0.86rem; }
-.admin-item .acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.admin-item .acts { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .mini-map svg { width: 100%; height: auto; display: block; border-radius: 10px; background: var(--bg); cursor: crosshair; }
 .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-weight: 600; z-index: 60; box-shadow: var(--shadow); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
+</head>
+<body>
 
 <header class="nav">
   <div class="wrap">
@@ -206,7 +218,7 @@ textarea { min-height: 90px; resize: vertical; }
         <div id="food-map"></div>
         <p class="map-note">tap a pin to see what we thought</p>
       </div>
-      <div id="food-detail" class="detail empty">pick a pin on the map</div>
+      <div id="food-detail" class="detail empty">loading…</div>
     </div>
     <div class="list">
       <h2>every place so far</h2>
@@ -237,6 +249,24 @@ textarea { min-height: 90px; resize: vertical; }
         <div class="section-head" style="margin:0"><h1>log a place</h1></div>
         <div class="who">logged in as <strong id="admin-who"></strong> · <a href="#admin" id="logout">log out</a></div>
       </div>
+
+      <details class="setup" id="setup">
+        <summary id="setup-summary">connect to github</summary>
+        <p>saving writes straight into the shmeeats repo on github, so this browser needs a token once.</p>
+        <ol>
+          <li>github → settings → developer settings → fine-grained tokens → generate new token</li>
+          <li>repository access: only <strong>lydtong/shmeeats</strong></li>
+          <li>permissions → repository → <strong>contents: read and write</strong></li>
+          <li>copy the token and paste it here. it stays in this browser only.</li>
+        </ol>
+        <div class="where-row">
+          <input id="gh-token" type="password" placeholder="github_pat_…" autocomplete="off">
+          <button class="btn small" type="button" id="gh-save">save token</button>
+          <button class="btn ghost small" type="button" id="gh-clear">forget</button>
+        </div>
+        <div id="gh-status" class="status"></div>
+      </details>
+
       <div class="admin-grid">
         <form id="review-form" class="panel" autocomplete="off">
           <h2 id="form-title">new review</h2>
@@ -249,9 +279,12 @@ textarea { min-height: 90px; resize: vertical; }
           </div>
           <div class="field autocomplete">
             <label for="f-city">where</label>
-            <input id="f-city" type="text" placeholder="start typing a city…">
+            <div class="where-row">
+              <input id="f-city" type="text" placeholder="city, or the restaurant's address">
+              <button class="btn ghost small" type="button" id="geo-btn">find</button>
+            </div>
             <div id="ac" class="ac-list" hidden></div>
-            <span class="hint" id="loc-hint">pick a city, tap the map, or paste "lat, lng"</span>
+            <span class="hint" id="loc-hint">pick a city as you type, hit find for an exact address, or tap the map</span>
           </div>
           <div class="mini-map" id="admin-map"></div>
           <div class="field" style="margin-top:12px">
@@ -275,7 +308,7 @@ textarea { min-height: 90px; resize: vertical; }
           <div class="field" id="photo-field">
             <label for="f-photos">photos</label>
             <input id="f-photos" type="file" accept="image/*" multiple>
-            <span class="hint" id="photo-hint"></span>
+            <span class="hint">phone photos get shrunk before upload.</span>
             <div id="photo-grid" class="photo-grid"></div>
           </div>
           <div class="row" style="align-items:center">
@@ -300,7 +333,6 @@ textarea { min-height: 90px; resize: vertical; }
   </div>
 </footer>
 
-<script id="shmee-data" type="application/json">{"reviews":[]}</script>
 <script id="shmee-states" type="application/json">__STATES__</script>
 <script id="shmee-cities" type="application/json">__CITIES__</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
@@ -310,11 +342,12 @@ textarea { min-height: 90px; resize: vertical; }
   const $ = (s, el) => (el || document).querySelector(s);
   const USERS = ['mimi', 'lydia'];
   const PASSWORD = 'midia';
+  const GH = { owner: 'lydtong', repo: 'shmeeats', branch: 'main', dataPath: 'data/reviews.json', photoDir: 'photos' };
   const SVGNS = 'http://www.w3.org/2000/svg';
+  const STATE_ABBR = { 'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR', 'California': 'CA', 'Colorado': 'CO', 'Connecticut': 'CT', 'Delaware': 'DE', 'District of Columbia': 'DC', 'Florida': 'FL', 'Georgia': 'GA', 'Hawaii': 'HI', 'Idaho': 'ID', 'Illinois': 'IL', 'Indiana': 'IN', 'Iowa': 'IA', 'Kansas': 'KS', 'Kentucky': 'KY', 'Louisiana': 'LA', 'Maine': 'ME', 'Maryland': 'MD', 'Massachusetts': 'MA', 'Michigan': 'MI', 'Minnesota': 'MN', 'Mississippi': 'MS', 'Missouri': 'MO', 'Montana': 'MT', 'Nebraska': 'NE', 'Nevada': 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ', 'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', 'Ohio': 'OH', 'Oklahoma': 'OK', 'Oregon': 'OR', 'Pennsylvania': 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC', 'South Dakota': 'SD', 'Tennessee': 'TN', 'Texas': 'TX', 'Utah': 'UT', 'Vermont': 'VT', 'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY' };
 
   // ---------- data ----------
-  const DATA = JSON.parse($('#shmee-data').textContent || '{"reviews":[]}');
-  DATA.reviews = Array.isArray(DATA.reviews) ? DATA.reviews : [];
+  const DATA = { reviews: [], loaded: false };
   const STATES = JSON.parse($('#shmee-states').textContent);
   const CITIES = JSON.parse($('#shmee-cities').textContent);
   const proj = (window.d3 && d3.geoAlbersUsa) ? d3.geoAlbersUsa().scale(1300).translate([487.5, 305]) : null;
@@ -326,7 +359,7 @@ textarea { min-height: 90px; resize: vertical; }
 
   function toast(msg) {
     const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
-    document.body.appendChild(t); setTimeout(() => t.remove(), 2600);
+    document.body.appendChild(t); setTimeout(() => t.remove(), 3200);
   }
   function stars(n) {
     const v = Math.max(0, Math.min(5, Number(n) || 0));
@@ -340,9 +373,85 @@ textarea { min-height: 90px; resize: vertical; }
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d); if (!m) return d;
     return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   }
-  function blobUrl(id) { return '/_blob/' + id; }
+  function photoUrl(id) { return GH.photoDir + '/' + id + '.jpg'; }
   function sortedReviews() {
     return DATA.reviews.slice().sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.created || 0) - (a.created || 0));
+  }
+
+  // public load: the json file served next to this page
+  async function loadPublic() {
+    try {
+      const res = await fetch(GH.dataPath + '?t=' + Date.now(), { cache: 'no-store' });
+      if (res.ok) { const j = await res.json(); DATA.reviews = Array.isArray(j.reviews) ? j.reviews : []; }
+    } catch (e) {}
+    DATA.loaded = true;
+    if (current === 'food') renderFood();
+    if (current === 'admin') renderAdminList();
+  }
+
+  // ---------- github ----------
+  const token = () => lsGet('shmee_gh_token') || '';
+  async function gh(path, opts) {
+    opts = opts || {};
+    const headers = Object.assign({ 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }, opts.headers || {});
+    if (token()) headers['Authorization'] = 'Bearer ' + token();
+    const res = await fetch('https://api.github.com/repos/' + GH.owner + '/' + GH.repo + '/' + path, { method: opts.method || 'GET', headers, body: opts.body, cache: 'no-store' });
+    if (res.status === 404 && opts.allow404) return null;
+    if (!res.ok) {
+      const err = new Error('github ' + res.status); err.status = res.status;
+      try { err.body = await res.json(); } catch (e) {}
+      throw err;
+    }
+    return res.status === 204 ? null : res.json();
+  }
+  function b64FromBytes(bytes) {
+    let bin = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(bin);
+  }
+  const b64FromText = (s) => b64FromBytes(new TextEncoder().encode(s));
+  const textFromB64 = (b) => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
+  const b64FromBlob = (blob) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+
+  async function fetchLatest() {
+    const f = await gh('contents/' + GH.dataPath + '?ref=' + GH.branch, { allow404: true });
+    if (!f) return { reviews: [], sha: undefined };
+    let reviews = [];
+    try { const j = JSON.parse(textFromB64(f.content)); reviews = Array.isArray(j.reviews) ? j.reviews : []; } catch (e) {}
+    return { reviews, sha: f.sha };
+  }
+  async function commitReviews(mutate, message) {
+    if (!token()) throw { code: 'no_token' };
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const latest = await fetchLatest();
+      const next = mutate(latest.reviews.slice());
+      const body = { message, branch: GH.branch, content: b64FromText(JSON.stringify({ reviews: next }, null, 1)) };
+      if (latest.sha) body.sha = latest.sha;
+      try {
+        await gh('contents/' + GH.dataPath, { method: 'PUT', body: JSON.stringify(body) });
+        DATA.reviews = next; return;
+      } catch (e) { if (e.status === 409 && attempt === 0) continue; throw e; }
+    }
+  }
+  async function uploadPhoto(id, blob) {
+    const body = { message: 'photo ' + id, branch: GH.branch, content: await b64FromBlob(blob) };
+    await gh('contents/' + GH.photoDir + '/' + id + '.jpg', { method: 'PUT', body: JSON.stringify(body) });
+  }
+  async function deletePhoto(id) {
+    try {
+      const f = await gh('contents/' + GH.photoDir + '/' + id + '.jpg?ref=' + GH.branch, { allow404: true });
+      if (f) await gh('contents/' + GH.photoDir + '/' + id + '.jpg', { method: 'DELETE', body: JSON.stringify({ message: 'remove photo ' + id, branch: GH.branch, sha: f.sha }) });
+    } catch (e) {}
+  }
+  function ghErrorText(e) {
+    const code = e && e.code, st = e && e.status;
+    if (code === 'no_token') return 'connect to github first (the box above the form).';
+    if (st === 401) return 'github did not accept that token. paste a fresh one.';
+    if (st === 403 || st === 404) return 'that token cannot write to the shmeeats repo. check it has contents: read and write.';
+    if (st === 409) return 'someone else saved at the same moment. try again.';
+    if (st === 422) return 'github rejected the change (' + ((e.body && e.body.message) || 'unknown') + ').';
+    if (e && e.message && /fetch/i.test(e.message)) return 'could not reach github. are you online?';
+    return 'could not save (' + ((e && (e.message || e.code)) || 'unknown') + ').';
   }
 
   // ---------- routing ----------
@@ -363,7 +472,7 @@ textarea { min-height: 90px; resize: vertical; }
     const a = e.target.closest('a[data-view]');
     if (!a) return;
     e.preventDefault();
-    try { location.hash = a.dataset.view; } catch (err) {}
+    try { history.replaceState(null, '', '#' + a.dataset.view); } catch (err) {}
     show(a.dataset.view);
   });
   window.addEventListener('hashchange', () => show((location.hash || '#home').slice(1)));
@@ -399,7 +508,6 @@ textarea { min-height: 90px; resize: vertical; }
   function placePins(map, items, opts) {
     map.pins.innerHTML = '';
     if (!proj) return;
-    // spread pins that land on the same spot
     const groups = {};
     const placed = [];
     items.forEach((r) => {
@@ -429,7 +537,7 @@ textarea { min-height: 90px; resize: vertical; }
     });
   }
 
-  // ---------- food page ----------
+  // ---------- reviews page ----------
   let foodMap = null, selectedId = null;
   function renderFood() {
     const list = sortedReviews();
@@ -444,20 +552,18 @@ textarea { min-height: 90px; resize: vertical; }
     if (!list.length) {
       cards.innerHTML = '';
       $('#food-detail').className = 'detail empty';
-      $('#food-detail').textContent = 'nothing logged yet. the cats are hungry.';
+      $('#food-detail').textContent = DATA.loaded ? 'nothing logged yet. the cats are hungry.' : 'loading…';
       return;
     }
     cards.innerHTML = list.map((r) => {
-      const avg = avgRating(r);
       return '<button class="card' + (r.id === selectedId ? ' selected' : '') + '" data-id="' + esc(r.id) + '">' +
         '<span class="name">' + esc(r.name) + '</span>' +
         '<span class="sub">' + esc(r.place || '') + (r.date ? ' · ' + esc(fmtDate(r.date)) : '') + '</span>' +
-        (avg ? stars(Math.round(avg)) : '') + '</button>';
+        (Number(r.ratingMimi) > 0 ? stars(r.ratingMimi) : '') + '</button>';
     }).join('');
     cards.querySelectorAll('.card').forEach((b) => b.addEventListener('click', () => selectReview(b.dataset.id)));
     renderDetail();
   }
-  function avgRating(r) { return Number(r.ratingMimi) || 0; }
   function selectReview(id) {
     selectedId = id;
     renderFood();
@@ -478,11 +584,11 @@ textarea { min-height: 90px; resize: vertical; }
       (r.notes ? '<p class="notes">' + esc(r.notes) + '</p>' : '');
     const photos = Array.isArray(r.photos) ? r.photos : [];
     if (photos.length) {
-      html += '<div class="photos">' + photos.map((id) => '<button type="button" data-photo="' + esc(id) + '" aria-label="open photo"><img src="' + esc(blobUrl(id)) + '" alt="" loading="lazy"></button>').join('') + '</div>';
+      html += '<div class="photos">' + photos.map((id) => '<button type="button" data-photo="' + esc(id) + '" aria-label="open photo"><img src="' + esc(photoUrl(id)) + '" alt="" loading="lazy"></button>').join('') + '</div>';
     }
     html += '<div class="meta">' + (r.date ? esc(fmtDate(r.date)) : '') + (r.by ? ' · logged by ' + esc(r.by) : '') + '</div>';
     d.innerHTML = html;
-    d.querySelectorAll('[data-photo]').forEach((b) => b.addEventListener('click', () => openLightbox(blobUrl(b.dataset.photo))));
+    d.querySelectorAll('[data-photo]').forEach((b) => b.addEventListener('click', () => openLightbox(photoUrl(b.dataset.photo))));
   }
   function openLightbox(src) {
     const lb = document.createElement('button'); lb.className = 'lightbox'; lb.setAttribute('aria-label', 'close photo');
@@ -495,9 +601,9 @@ textarea { min-height: 90px; resize: vertical; }
   let admin = lsGet('shmee_admin');
   if (!USERS.includes(admin)) admin = null;
   let adminMap = null, editingId = null;
-  let photoIds = [];   // already-uploaded asset ids (editing)
-  let pendingFiles = []; // {file, url} not yet uploaded
-  let assetsNS = undefined, artifactNS = undefined;
+  let photoIds = [];      // already-uploaded photo ids (editing)
+  let pendingFiles = [];  // {file, url} not yet uploaded
+  let removedPhotos = []; // ids dropped while editing, deleted on save
 
   function renderAdmin() {
     $('#login').hidden = !!admin;
@@ -515,20 +621,33 @@ textarea { min-height: 90px; resize: vertical; }
     if (!$('#f-date').value && !editingId) $('#f-date').value = new Date().toISOString().slice(0, 10);
     updatePreviewPin();
     renderAdminList();
-    resolveCaps();
+    renderSetup();
+    refreshFromGithub();
   }
-  async function resolveCaps() {
-    if (assetsNS !== undefined) return;
-    assetsNS = null; artifactNS = null;
-    if (!window.claude || !window.claude.use) { $('#photo-hint').textContent = 'photos save only on the published site.'; return; }
-    try { [assetsNS, artifactNS] = await Promise.all([claude.use('assets'), claude.use('artifact')]); } catch (e) { assetsNS = null; artifactNS = null; }
-    if (!assetsNS) {
-      $('#f-photos').disabled = true;
-      $('#photo-hint').textContent = 'photo uploads need editor access on this page. ask lydia to add you as an editor.';
-    } else {
-      $('#photo-hint').textContent = 'phone photos get shrunk before upload.';
+  function renderSetup() {
+    const has = !!token();
+    $('#setup-summary').textContent = has ? 'github: connected' : 'connect to github (needed to save)';
+    $('#setup').open = !has;
+  }
+  async function refreshFromGithub() {
+    if (!token()) return;
+    try {
+      const latest = await fetchLatest();
+      DATA.reviews = latest.reviews; DATA.loaded = true;
+      renderAdminList();
+      $('#gh-status').textContent = 'connected. ' + latest.reviews.length + ' reviews in the repo.'; $('#gh-status').className = 'status';
+    } catch (e) {
+      $('#gh-status').textContent = ghErrorText(e); $('#gh-status').className = 'status err';
     }
   }
+  $('#gh-save').addEventListener('click', async () => {
+    const t = $('#gh-token').value.trim();
+    if (!t) { $('#gh-status').textContent = 'paste a token first.'; $('#gh-status').className = 'status err'; return; }
+    lsSet('shmee_gh_token', t); $('#gh-token').value = '';
+    $('#gh-status').textContent = 'checking…'; $('#gh-status').className = 'status';
+    renderSetup(); await refreshFromGithub();
+  });
+  $('#gh-clear').addEventListener('click', () => { lsSet('shmee_gh_token', null); $('#gh-status').textContent = 'token forgotten.'; renderSetup(); });
 
   $('#login').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -541,17 +660,17 @@ textarea { min-height: 90px; resize: vertical; }
   });
   $('#logout').addEventListener('click', (e) => { e.preventDefault(); admin = null; lsSet('shmee_admin', null); renderAdmin(); });
 
-  // star inputs
-  ['mimi'].forEach((who) => {
-    const el = $('#stars-' + who);
+  // star input
+  (function () {
+    const el = $('#stars-mimi');
     for (let i = 1; i <= 5; i++) {
       const b = document.createElement('button'); b.type = 'button'; b.textContent = '★'; b.setAttribute('aria-label', i + ' stars');
-      b.addEventListener('click', () => setStars(who, Number(el.dataset.value) === i ? 0 : i));
+      b.addEventListener('click', () => setStars(Number(el.dataset.value) === i ? 0 : i));
       el.appendChild(b);
     }
-  });
-  function setStars(who, v) {
-    const el = $('#stars-' + who); el.dataset.value = v;
+  })();
+  function setStars(v) {
+    const el = $('#stars-mimi'); el.dataset.value = v;
     el.querySelectorAll('button').forEach((b, i) => b.classList.toggle('on', i < v));
   }
 
@@ -577,44 +696,72 @@ textarea { min-height: 90px; resize: vertical; }
   }
   const cityInput = $('#f-city'), ac = $('#ac');
   let acItems = [], acIndex = -1;
+  function showAc(items) {
+    acItems = items; acIndex = -1;
+    ac.innerHTML = items.map((c, i) => '<button type="button" data-i="' + i + '">' + esc(c.label) + (c.sub ? ' <span class="st">' + esc(c.sub) + '</span>' : '') + '</button>').join('');
+    ac.hidden = !items.length;
+  }
   cityInput.addEventListener('input', () => {
     const q = cityInput.value.trim();
     const m = /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/.exec(q);
     if (m) { setLocation(Number(m[1]), Number(m[2]), null); ac.hidden = true; return; }
     if (q.length < 2) { ac.hidden = true; return; }
     const ql = q.toLowerCase();
-    acItems = [];
+    const hits = [];
     for (const c of CITIES) {
-      const full = (c[0] + ', ' + c[1]).toLowerCase();
-      if (c[0].toLowerCase().startsWith(ql) || full.startsWith(ql)) { acItems.push(c); if (acItems.length >= 8) break; }
+      if (c[0].toLowerCase().startsWith(ql) || (c[0] + ', ' + c[1]).toLowerCase().startsWith(ql)) { hits.push(c); if (hits.length >= 8) break; }
     }
-    if (!acItems.length) {
-      for (const c of CITIES) { if (c[0].toLowerCase().includes(ql)) { acItems.push(c); if (acItems.length >= 8) break; } }
-    }
-    acIndex = -1;
-    ac.innerHTML = acItems.map((c, i) => '<button type="button" data-i="' + i + '">' + esc(c[0]) + ' <span class="st">' + esc(c[1]) + '</span></button>').join('');
-    ac.hidden = !acItems.length;
+    if (!hits.length) for (const c of CITIES) { if (c[0].toLowerCase().includes(ql)) { hits.push(c); if (hits.length >= 8) break; } }
+    showAc(hits.map((c) => ({ label: c[0], sub: c[1], lat: c[2], lng: c[3], place: c[0] + ', ' + c[1] })));
   });
   ac.addEventListener('mousedown', (e) => {
     const b = e.target.closest('button'); if (!b) return;
-    e.preventDefault(); pickCity(acItems[Number(b.dataset.i)]);
+    e.preventDefault(); pickAc(acItems[Number(b.dataset.i)]);
   });
   cityInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && ac.hidden) { e.preventDefault(); geocode(); return; }
     if (ac.hidden) return;
     if (e.key === 'ArrowDown') { acIndex = Math.min(acItems.length - 1, acIndex + 1); }
     else if (e.key === 'ArrowUp') { acIndex = Math.max(0, acIndex - 1); }
-    else if (e.key === 'Enter') { e.preventDefault(); pickCity(acItems[Math.max(0, acIndex)]); return; }
+    else if (e.key === 'Enter') { e.preventDefault(); pickAc(acItems[Math.max(0, acIndex)]); return; }
     else if (e.key === 'Escape') { ac.hidden = true; return; }
     else return;
     e.preventDefault();
     ac.querySelectorAll('button').forEach((b, i) => b.classList.toggle('active', i === acIndex));
   });
   cityInput.addEventListener('blur', () => setTimeout(() => { ac.hidden = true; }, 120));
-  function pickCity(c) {
+  function pickAc(c) {
     if (!c) return;
     ac.hidden = true;
-    setLocation(c[2], c[3], c[0] + ', ' + c[1]);
+    if (c.name && !$('#f-name').value.trim()) $('#f-name').value = c.name;
+    setLocation(c.lat, c.lng, c.place);
   }
+  // exact address lookup via OpenStreetMap's nominatim
+  async function geocode() {
+    const q = cityInput.value.trim();
+    if (!q) return;
+    const btn = $('#geo-btn'); btn.disabled = true;
+    $('#loc-hint').textContent = 'looking that up…';
+    try {
+      const url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&countrycodes=us&q=' + encodeURIComponent(q);
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      const hits = await res.json();
+      if (!hits.length) { $('#loc-hint').textContent = 'nothing found for that. try adding the city, or tap the map.'; return; }
+      showAc(hits.map((h) => {
+        const a = h.address || {};
+        const city = a.city || a.town || a.village || a.hamlet || a.county || '';
+        const st = STATE_ABBR[a.state] || '';
+        const place = [city, st].filter(Boolean).join(', ');
+        const road = [a.house_number, a.road].filter(Boolean).join(' ');
+        return { label: h.name || road || place, sub: [road, place].filter(Boolean).join(' · '), lat: Number(h.lat), lng: Number(h.lon), place: place || h.display_name, name: h.name };
+      }));
+      $('#loc-hint').textContent = 'pick the right one';
+      cityInput.focus();
+    } catch (e) {
+      $('#loc-hint').textContent = 'lookup failed. pick a city from the list or tap the map.';
+    } finally { btn.disabled = false; }
+  }
+  $('#geo-btn').addEventListener('click', geocode);
   $('#f-name').addEventListener('input', updatePreviewPin);
 
   // photos
@@ -625,10 +772,10 @@ textarea { min-height: 90px; resize: vertical; }
   });
   function renderPhotoGrid() {
     const g = $('#photo-grid');
-    g.innerHTML = photoIds.map((id, i) => '<div class="ph"><img src="' + esc(blobUrl(id)) + '" alt=""><button type="button" class="x" data-old="' + i + '" aria-label="remove photo">×</button></div>').join('') +
+    g.innerHTML = photoIds.map((id, i) => '<div class="ph"><img src="' + esc(photoUrl(id)) + '" alt=""><button type="button" class="x" data-old="' + i + '" aria-label="remove photo">×</button></div>').join('') +
       pendingFiles.map((p, i) => '<div class="ph"><img src="' + esc(p.url) + '" alt=""><button type="button" class="x" data-new="' + i + '" aria-label="remove photo">×</button></div>').join('');
     g.querySelectorAll('.x').forEach((b) => b.addEventListener('click', () => {
-      if (b.dataset.old != null) photoIds.splice(Number(b.dataset.old), 1);
+      if (b.dataset.old != null) removedPhotos.push(photoIds.splice(Number(b.dataset.old), 1)[0]);
       else pendingFiles.splice(Number(b.dataset.new), 1);
       renderPhotoGrid();
     }));
@@ -651,13 +798,13 @@ textarea { min-height: 90px; resize: vertical; }
 
   // form
   function resetForm() {
-    editingId = null; photoIds = []; pendingFiles = [];
+    editingId = null; photoIds = []; pendingFiles = []; removedPhotos = [];
     ['f-id', 'f-lat', 'f-lng', 'f-name', 'f-city', 'f-ate', 'f-notes'].forEach((id) => { $('#' + id).value = ''; });
     $('#f-date').value = new Date().toISOString().slice(0, 10);
-    setStars('mimi', 0);
+    setStars(0);
     $('#form-title').textContent = 'new review';
     $('#cancel-edit').hidden = true;
-    $('#loc-hint').textContent = 'pick a city, tap the map, or paste "lat, lng"';
+    $('#loc-hint').textContent = 'pick a city as you type, hit find for an exact address, or tap the map';
     renderPhotoGrid(); updatePreviewPin();
     ssSet('shmee_draft', null);
   }
@@ -666,7 +813,7 @@ textarea { min-height: 90px; resize: vertical; }
     editingId = r.id;
     $('#f-id').value = r.id; $('#f-name').value = r.name || ''; $('#f-city').value = r.place || '';
     $('#f-ate').value = r.ate || ''; $('#f-notes').value = r.notes || ''; $('#f-date').value = r.date || '';
-    setStars('mimi', Number(r.ratingMimi) || 0);
+    setStars(Number(r.ratingMimi) || 0);
     photoIds = Array.isArray(r.photos) ? r.photos.slice() : [];
     if (r.lat && r.lng) setLocation(Number(r.lat), Number(r.lng), null);
     $('#form-title').textContent = 'editing ' + (r.name || '');
@@ -698,67 +845,38 @@ textarea { min-height: 90px; resize: vertical; }
     e.preventDefault();
     const r = readForm();
     if (!r.name) { setStatus('give it a name first.', true); return; }
-    if (!(r.lat && r.lng)) { setStatus('where is it? pick a city or tap the map.', true); return; }
+    if (!(r.lat && r.lng)) { setStatus('where is it? pick a city, hit find, or tap the map.', true); return; }
+    if (!token()) { setStatus(ghErrorText({ code: 'no_token' }), true); $('#setup').open = true; return; }
     const btn = $('#save-btn'); btn.disabled = true;
     try {
-      if (pendingFiles.length) {
-        if (!assetsNS) throw { code: 'no_assets' };
-        for (let i = 0; i < pendingFiles.length; i++) {
-          setStatus('uploading photo ' + (i + 1) + ' of ' + pendingFiles.length + '…');
-          const blob = await shrink(pendingFiles[i].file);
-          const up = await assetsNS.upload(blob, { type: blob.type || 'image/jpeg' });
-          r.photos.push(up.id);
-        }
+      for (let i = 0; i < pendingFiles.length; i++) {
+        setStatus('uploading photo ' + (i + 1) + ' of ' + pendingFiles.length + '…');
+        const id = r.id + '-' + Date.now().toString(36) + i;
+        await uploadPhoto(id, await shrink(pendingFiles[i].file));
+        r.photos.push(id);
       }
-      const existing = DATA.reviews.find((x) => x.id === r.id);
-      if (existing) Object.assign(existing, r, { created: existing.created || Date.now(), updated: Date.now() });
-      else DATA.reviews.push(Object.assign(r, { created: Date.now() }));
       setStatus('saving…');
-      await persist();
-      ssSet('shmee_flash', existing ? 'updated ' + r.name : 'logged ' + r.name);
-      ssSet('shmee_draft', null);
-      // the view reloads to the new version; if it does not (no runtime), reflect locally
-      resetForm(); renderAdminList(); setStatus('saved.');
+      let wasEdit = false;
+      await commitReviews((list) => {
+        const idx = list.findIndex((x) => x.id === r.id);
+        if (idx >= 0) { wasEdit = true; list[idx] = Object.assign({}, list[idx], r, { updated: Date.now() }); }
+        else list.push(Object.assign(r, { created: Date.now() }));
+        return list;
+      }, (editingId ? 'edit ' : 'log ') + r.name);
+      for (const id of removedPhotos) await deletePhoto(id);
+      toast((wasEdit ? 'updated ' : 'logged ') + r.name);
+      resetForm(); renderAdminList();
+      setStatus('saved. the reviews page picks it up in about a minute.');
     } catch (err) {
-      const code = err && err.code;
-      if (code === 'conflict') setStatus('someone else just saved. reloading to the newest version…', true);
-      else if (code === 'not_writer' || code === 'not_granted') setStatus('this account can view but cannot save. ask lydia to add you as an editor of this page.', true);
-      else if (code === 'no_assets') setStatus('photos need editor access on this page. remove them or ask lydia to add you as an editor.', true);
-      else if (code === 'no_runtime') setStatus('saving only works on the published page.', true);
-      else if (code === 'too_large') setStatus('that is too big to save. try fewer photos.', true);
-      else setStatus('could not save (' + (code || (err && err.message) || 'unknown') + '). try again in a moment.', true);
+      setStatus(ghErrorText(err), true);
     } finally { btn.disabled = false; }
   });
-
-  async function persist() {
-    if (artifactNS === undefined) await resolveCaps();
-    if (!artifactNS) throw { code: 'no_runtime' };
-    const src = await ownSource();
-    const json = JSON.stringify({ reviews: DATA.reviews }).replace(/<\//g, '<\\/');
-    const re = /(<script id="shmee-data" type="application\/json">)[\s\S]*?(<\/script>)/;
-    if (!re.test(src)) throw { code: 'template' };
-    let html = src.replace(re, (m, a, b) => a + json + b);
-    if (!/^\s*<!doctype html>/i.test(html)) html = '<!doctype html>' + html;
-    await artifactNS.publish(html);
-  }
-  async function ownSource() {
-    const tries = ['index.html', location.pathname, location.href];
-    for (const u of tries) {
-      try {
-        const res = await fetch(u, { cache: 'no-store' });
-        if (!res.ok) continue;
-        const t = await res.text();
-        if (t.includes('id="shmee-data"')) return t;
-      } catch (e) {}
-    }
-    throw { code: 'source' };
-  }
 
   // admin list
   function renderAdminList() {
     const list = sortedReviews();
     const el = $('#admin-list');
-    if (!list.length) { el.innerHTML = '<div class="empty-state">nothing yet. log the first one!</div>'; return; }
+    if (!list.length) { el.innerHTML = '<div class="empty-state">' + (DATA.loaded ? 'nothing yet. log the first one!' : 'loading…') + '</div>'; return; }
     el.innerHTML = list.map((r) => '<div class="admin-item" data-id="' + esc(r.id) + '">' +
       '<div><div class="n">' + esc(r.name) + '</div><div class="s">' + esc(r.place || '') + (r.date ? ' · ' + esc(fmtDate(r.date)) : '') + '</div></div>' +
       '<div class="acts"><button type="button" class="btn ghost small" data-edit>edit</button><button type="button" class="btn danger small" data-del>delete</button></div></div>').join('');
@@ -771,24 +889,23 @@ textarea { min-height: 90px; resize: vertical; }
       acts.querySelector('[data-no]').addEventListener('click', renderAdminList);
       acts.querySelector('[data-yes]').addEventListener('click', async () => {
         const id = item.dataset.id;
-        const idx = DATA.reviews.findIndex((x) => x.id === id);
-        if (idx < 0) return;
-        const removed = DATA.reviews.splice(idx, 1)[0];
+        const r = DATA.reviews.find((x) => x.id === id);
+        if (!r) return;
         acts.innerHTML = '<span class="s">deleting…</span>';
         try {
-          await persist();
-          ssSet('shmee_flash', 'deleted ' + removed.name);
+          await commitReviews((list) => list.filter((x) => x.id !== id), 'delete ' + r.name);
+          for (const pid of (r.photos || [])) await deletePhoto(pid);
+          toast('deleted ' + r.name);
           renderAdminList();
         } catch (err) {
-          DATA.reviews.splice(idx, 0, removed);
           renderAdminList();
-          setStatus('could not delete (' + ((err && err.code) || 'unknown') + ').', true);
+          setStatus(ghErrorText(err), true);
         }
       });
     }));
   }
 
-  // draft stash so a reload (conflict, update) does not eat a half-written review
+  // draft stash so a reload does not eat a half-written review
   ['f-name', 'f-city', 'f-ate', 'f-notes', 'f-date'].forEach((id) => {
     $('#' + id).addEventListener('input', () => {
       if (editingId) return;
@@ -801,14 +918,15 @@ textarea { min-height: 90px; resize: vertical; }
       $('#f-name').value = d.name || ''; $('#f-city').value = d.city || ''; $('#f-ate').value = d.ate || ''; $('#f-notes').value = d.notes || '';
       if (d.date) $('#f-date').value = d.date;
       $('#f-lat').value = d.lat || ''; $('#f-lng').value = d.lng || '';
-      setStars('mimi', Number(d.m) || 0);
+      setStars(Number(d.m) || 0);
     } catch (e) {}
   })();
 
   // ---------- boot ----------
-  const flash = ssGet('shmee_flash');
-  if (flash) { ssSet('shmee_flash', null); setTimeout(() => toast(flash), 300); }
   const start = (location.hash || '#home').slice(1);
   show(views.includes(start) ? start : 'home');
+  loadPublic();
 })();
 </script>
+</body>
+</html>

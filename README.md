@@ -1,9 +1,14 @@
 # shmeeats
 
-Mimi & Lydia's restaurant map. Published at https://claude.ai/artifact/JLdA6U3xBJTohoV5hobTxt
+Mimi & Lydia's restaurant map. Live at https://lydtong.github.io/shmeeats/
 
-- `src/template.html` — the page source (edit this, not index.html)
-- `src/build.py` — inlines the logo, the US state outlines, and the city list into `index.html`
-- `logo.png` — the cat drawing, cleaned up (transparent); `cat-original.png` is the photo
-- Rebuild: `python3 -I src/build.py src/states-albers-10m.json src/cities15000.txt logo.png index.html`
-- Admin: footer "admin" link, users mimi / lydia, password midia. Saving needs Editor access on the artifact.
+- `index.html` — the whole site (built; do not edit by hand)
+- `src/template.html` — the page source. Edit this, then rebuild:
+  `python3 -I src/build.py src/states-albers-10m.json src/cities15000.txt logo.png index.html`
+- `data/reviews.json` — every review. The admin page writes here through the GitHub API.
+- `photos/` — review photos, uploaded by the admin page.
+- `logo.png` — the cat drawing, cleaned up; `cat-original.png` is the photo.
+
+Admin: the footer "admin" link. Users mimi / lydia, password midia. To save, paste a
+fine-grained GitHub token (repo access: this repo only; permission: Contents read & write)
+into the "connect to github" box once per browser.
