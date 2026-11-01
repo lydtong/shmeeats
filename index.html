@@ -663,28 +663,55 @@ textarea.tall { min-height: 180px; }
   }
   // heic/heif: safari reads it natively; other browsers get a converter loaded on demand
   const looksHeic = (file) => /heic|heif/i.test(file.type || '') || /\.(heic|heif)$/i.test(file.name || '');
-  let heicLib = null;
-  function loadHeicLib() {
-    if (!heicLib) heicLib = new Promise((resolve, reject) => {
-      if (window.heic2any) return resolve(window.heic2any);
+  const scriptLoads = {};
+  function loadScript(url, getGlobal) {
+    if (!scriptLoads[url]) scriptLoads[url] = new Promise((resolve, reject) => {
+      if (getGlobal()) return resolve(getGlobal());
       const sc = document.createElement('script');
-      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/heic2any/0.0.4/heic2any.min.js';
-      sc.onload = () => resolve(window.heic2any); sc.onerror = () => { heicLib = null; reject(new Error('heic converter failed to load')); };
+      sc.src = url;
+      sc.onload = () => (getGlobal() ? resolve(getGlobal()) : reject(new Error('converter did not load')));
+      sc.onerror = () => { delete scriptLoads[url]; reject(new Error('converter failed to download')); };
       document.head.appendChild(sc);
     });
-    return heicLib;
+    return scriptLoads[url];
   }
   async function nativeDecodes(file) {
     try { const im = await decodeNative(file); freeImage(im); return true; } catch (e) { return false; }
+  }
+  const jpegFile = (blob, name) => new File([blob], (name || 'photo').replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+  const canvasJpeg = (c, q) => new Promise((resolve, reject) => c.toBlob((b) => (b ? resolve(b) : reject(new Error('image too large for this browser'))), 'image/jpeg', q));
+  // converter 1: libheif (current, handles the 10-bit hdr heic newer iphones make)
+  async function heicViaLibheif(file) {
+    const libheif = await loadScript('https://cdn.jsdelivr.net/npm/libheif-js@1.19.8/libheif-wasm/libheif-bundle.js', () => window.libheif);
+    const decoder = new libheif.HeifDecoder();
+    const images = decoder.decode(await file.arrayBuffer());
+    if (!images || !images.length) throw new Error('no picture inside the heic');
+    const im = images[0];
+    const w = im.get_width(), h = im.get_height();
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const ctx = c.getContext('2d');
+    const id = ctx.createImageData(w, h);
+    await new Promise((resolve, reject) => im.display(id, (d) => (d ? resolve() : reject(new Error('heic decode failed')))));
+    ctx.putImageData(id, 0, 0);
+    images.forEach((x) => { try { x.free(); } catch (e) {} });
+    return jpegFile(await canvasJpeg(c, 0.92), file.name);
+  }
+  // converter 2: heic2any (older libheif, kept as a fallback)
+  async function heicViaHeic2any(file) {
+    const heic2any = await loadScript('https://cdnjs.cloudflare.com/ajax/libs/heic2any/0.0.4/heic2any.min.js', () => window.heic2any);
+    const out = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 });
+    return jpegFile(Array.isArray(out) ? out[0] : out, file.name);
   }
   // returns a jpeg File when the browser cannot read the original (heic on chrome and friends)
   async function normalizeFile(file) {
     if (!looksHeic(file) && (file.type || '').startsWith('image/')) return file;
     if (await nativeDecodes(file)) return file;
-    const heic2any = await loadHeicLib();
-    const out = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 });
-    const blob = Array.isArray(out) ? out[0] : out;
-    return new File([blob], (file.name || 'photo').replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+    let lastErr = null;
+    for (const conv of [heicViaLibheif, heicViaHeic2any]) {
+      try { const out = await conv(file); if (await nativeDecodes(out)) return out; lastErr = new Error('converted file unreadable'); }
+      catch (e) { lastErr = e; }
+    }
+    throw lastErr || new Error('could not convert heic');
   }
   async function decodeImage(file) {
     if (looksHeic(file)) file = await normalizeFile(file);
@@ -1183,19 +1210,19 @@ textarea.tall { min-height: 180px; }
             const small = await shrink(im, 360, 0.75);
             freeImage(im);
             p.url = URL.createObjectURL(small);
-          } catch (err) { p.url = ''; p.failed = true; console.warn('photo preview failed', err); }
+          } catch (err) { p.url = ''; p.failed = true; p.why = (err && (err.message || String(err))) || 'unknown'; console.warn('photo preview failed', err); }
           const box = gridEl.querySelector('.thumb[data-key="' + p.key + '"]');
           if (!box) continue;
           const ph = box.querySelector('.ph-wait'); if (ph) ph.remove();
           if (p.url) { const im2 = document.createElement('img'); im2.src = p.url; im2.alt = ''; box.prepend(im2); }
-          else { const t = document.createElement('span'); t.className = 'ph-wait'; t.textContent = 'could not read this one'; box.prepend(t); }
+          else { const t = document.createElement('span'); t.className = 'ph-wait'; t.textContent = 'could not read this one (' + p.why + ')'; box.prepend(t); }
         }
       })();
     });
     function render() {
       const cell = (inner, cap, attr, key) => '<div class="ph"><div class="thumb"' + (key ? ' data-key="' + key + '"' : '') + '>' + inner + '<button type="button" class="x" ' + attr + ' aria-label="remove photo">×</button></div><input type="text" class="cap" ' + attr + ' placeholder="description" value="' + esc(cap) + '"></div>';
       gridEl.innerHTML = st.ids.map((p, i) => cell('<img src="' + esc(thumbUrl(p.id)) + '" alt="" data-full="' + esc(photoUrl(p.id)) + '">', p.caption, 'data-old="' + i + '"', '')).join('') +
-        st.pending.map((p, i) => cell(p.url ? '<img src="' + esc(p.url) + '" alt="">' : '<span class="ph-wait">' + (p.failed ? 'could not read this one' : '…') + '</span>', p.caption, 'data-new="' + i + '"', p.key)).join('');
+        st.pending.map((p, i) => cell(p.url ? '<img src="' + esc(p.url) + '" alt="">' : '<span class="ph-wait">' + (p.failed ? 'could not read this one (' + esc(p.why || '') + ')' : '…') + '</span>', p.caption, 'data-new="' + i + '"', p.key)).join('');
       gridEl.querySelectorAll('.x').forEach((b) => b.addEventListener('click', () => {
         if (b.dataset.old != null) st.removed.push(st.ids.splice(Number(b.dataset.old), 1)[0].id);
         else { const gone = st.pending.splice(Number(b.dataset.new), 1)[0]; if (gone && gone.url) URL.revokeObjectURL(gone.url); }
@@ -1211,13 +1238,20 @@ textarea.tall { min-height: 180px; }
       load(photos) { st.ids = photos; st.pending = []; st.removed = []; render(); },
       get ids() { return st.ids; }, get pending() { return st.pending; }, get removed() { return st.removed; },
       // upload pending files, returning the full photo list for the record
+      skipped: 0,
       async flush(prefix, status) {
         const out = st.ids.map((p) => ({ id: p.id, caption: p.caption.trim() }));
+        this.skipped = 0;
         for (let i = 0; i < st.pending.length; i++) {
           status('uploading photo ' + (i + 1) + ' of ' + st.pending.length + '…');
           const id = prefix + '-' + Date.now().toString(36) + i;
-          await uploadPhoto(id, st.pending[i].file);
-          out.push({ id, caption: st.pending[i].caption.trim() });
+          try {
+            await uploadPhoto(id, st.pending[i].file);
+            out.push({ id, caption: st.pending[i].caption.trim() });
+          } catch (err) {
+            if (err && err.status) throw err; // github refused: stop, that is a real save error
+            this.skipped++; console.warn('photo skipped', err);
+          }
         }
         return out;
       },
@@ -1324,9 +1358,10 @@ textarea.tall { min-height: 180px; }
         return list;
       }, (wasEdit ? 'edit ' : 'log ') + r.name);
       await form.photos.cleanup();
+      const skipped = form.photos.skipped;
       toast((wasEdit ? 'updated ' : 'logged ') + r.name);
       reset(); renderAdminList();
-      form.status('saved. the public pages pick it up in about a minute.');
+      form.status(skipped ? 'saved, but ' + skipped + (skipped === 1 ? ' photo could not be read and was left out.' : ' photos could not be read and were left out.') : 'saved. the public pages pick it up in about a minute.', !!skipped);
     } catch (err) {
       form.status(ghErrorText(err), true);
     } finally { btn.disabled = false; }
