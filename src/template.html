@@ -316,22 +316,22 @@ textarea { min-height: 90px; resize: vertical; }
           <div class="mini-map" id="admin-map"></div>
           <div class="field" style="margin-top:12px">
             <label for="f-ate">what we ate</label>
-            <textarea id="f-ate" class="ate-box" placeholder="the garlic knots, obviously&#10;then the vodka slice&#10;then a second vodka slice"></textarea>
+            <textarea id="f-ate" class="ate-box"></textarea>
           </div>
           <div class="field">
             <label for="f-with">who mimi ate with</label>
-            <input id="f-with" type="text" placeholder="lydia">
+            <input id="f-with" type="text">
           </div>
           <div class="field">
             <label for="f-score">mimi's score</label>
             <div class="score-input">
-              <input id="f-score" type="number" min="0" max="10" step="0.1" inputmode="decimal" placeholder="9.7">
+              <input id="f-score" type="number" min="0" max="10" step="0.1" inputmode="decimal">
               <span>out of 10</span>
             </div>
           </div>
           <div class="field">
             <label for="f-notes">notes</label>
-            <textarea id="f-notes" placeholder="would we go back?"></textarea>
+            <textarea id="f-notes"></textarea>
           </div>
           <div class="row">
             <div class="field">
@@ -995,7 +995,7 @@ textarea { min-height: 90px; resize: vertical; }
   });
   function renderPhotoGrid() {
     const g = $('#photo-grid');
-    const cell = (src, cap, attr) => '<div class="ph"><div class="thumb"><img src="' + esc(src) + '" alt="" data-full="' + esc(src.replace(/-t\.jpg$/, '.jpg')) + '"><button type="button" class="x" ' + attr + ' aria-label="remove photo">×</button></div><input type="text" class="cap" ' + attr + ' placeholder="what is this?" value="' + esc(cap) + '"></div>';
+    const cell = (src, cap, attr) => '<div class="ph"><div class="thumb"><img src="' + esc(src) + '" alt="" data-full="' + esc(src.replace(/-t\.jpg$/, '.jpg')) + '"><button type="button" class="x" ' + attr + ' aria-label="remove photo">×</button></div><input type="text" class="cap" ' + attr + ' value="' + esc(cap) + '"></div>';
     g.innerHTML = photoIds.map((p, i) => cell(thumbUrl(p.id), p.caption, 'data-old="' + i + '"')).join('') +
       pendingFiles.map((p, i) => cell(p.url, p.caption, 'data-new="' + i + '"')).join('');
     g.querySelectorAll('.x').forEach((b) => b.addEventListener('click', () => {
