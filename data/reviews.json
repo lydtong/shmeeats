@@ -1,21 +1,3 @@
 {
- "reviews": [
-  {
-   "id": "rmvyezgccmvyp",
-   "name": "Suraya",
-   "address": "1528 Frankford Avenue, Philadelphia, PA 19125",
-   "place": "Philadelphia, PA",
-   "state": "PA",
-   "lat": 39.97373,
-   "lng": -75.13391,
-   "ate": "",
-   "with": "",
-   "score": null,
-   "notes": "",
-   "date": "2026-11-01",
-   "photos": [],
-   "by": "mimi",
-   "created": 1793572881430
-  }
- ]
+ "reviews": []
 }
