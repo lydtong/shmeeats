@@ -59,8 +59,8 @@ img { max-width: 100%; }
 .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; letter-spacing: -0.01em; font-size: 1.15rem; }
 .brand .logo { width: 54px; }
-.links { display: flex; gap: 6px; }
-.links a { text-decoration: none; padding: 6px 12px; border-radius: 999px; font-weight: 600; color: var(--ink-soft); }
+.links { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.links a { text-decoration: none; padding: 6px 12px; border-radius: 999px; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
 .links a[aria-current="page"] { background: var(--accent-soft); color: var(--ink); }
 .links a:hover { color: var(--ink); }
 
@@ -82,11 +82,11 @@ footer a { color: var(--ink-soft); }
 .detail.mini .score .big { font-size: 1.2rem; }
 .detail.mini a { color: var(--accent); font-weight: 600; text-decoration: none; margin-left: auto; }
 
-/* reviews */
+/* reviews + cooking */
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-block: 8px 12px; }
 .section-head h1 { margin: 0; font-size: 1.6rem; font-weight: 600; letter-spacing: -0.01em; }
 .section-head .count { color: var(--ink-soft); font-weight: 500; }
-.food-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); gap: 18px; align-items: start; }
+.food-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1fr); gap: 18px; align-items: start; }
 @media (max-width: 760px) { .food-grid { grid-template-columns: minmax(0, 1fr); } }
 .map-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 10px; min-width: 0; position: relative; }
 .map-card svg { width: 100%; height: auto; display: block; border-radius: 10px; }
@@ -97,42 +97,60 @@ footer a { color: var(--ink-soft); }
 .zoom-controls button:hover { background: var(--accent-soft); }
 .zoom-controls button.reset { font-size: 0.7rem; }
 .state { fill: var(--map-fill); stroke: var(--map-line); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.pin circle { vector-effect: none; }
 .pin { cursor: pointer; }
-.pin circle { fill: var(--pin); stroke: var(--pin-ring); stroke-width: 2.5; transition: r 0.15s ease; }
+.pin circle { fill: var(--pin); stroke: var(--pin-ring); stroke-width: 2.5; transition: r 0.15s ease; vector-effect: none; }
 .pin:hover circle, .pin.selected circle { r: 10; }
 .pin.selected .halo { fill: none; stroke: var(--pin); stroke-width: 2; opacity: 0.5; }
 .pin .halo { fill: none; stroke: none; }
 .pin.preview circle { fill: var(--accent); }
 .map-note { color: var(--ink-soft); font-size: 0.85rem; text-align: center; margin: 6px 0 2px; }
 .detail { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; min-width: 0; }
-.detail.empty { color: var(--ink-soft); text-align: center; padding-block: 38px; }
 .detail h2 { margin: 0 0 2px; font-size: 1.35rem; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
 .detail .where { color: var(--ink-soft); font-weight: 500; margin: 0; }
-.detail .addr { color: var(--ink-soft); font-size: 0.9rem; margin: 0 0 10px; }
-.detail .ate, .detail .with { margin: 0 0 6px; }
-.detail .ate { white-space: pre-wrap; }
-.ate-box { min-height: 70px; }
-.detail .ate strong, .detail .with strong { font-weight: 600; }
 .score { display: inline-flex; align-items: baseline; gap: 3px; color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
 .score .big { font-size: 1.6rem; line-height: 1; }
 .score .of { font-size: 0.85rem; color: var(--ink-soft); font-weight: 500; }
-.detail .score { margin: 6px 0 12px; }
-.notes { white-space: pre-wrap; margin: 0 0 12px; }
-.photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+.score .who { font-size: 0.8rem; color: var(--ink-soft); font-weight: 500; margin-right: 2px; }
+.scores { display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* top 5 */
+.top5 { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; min-width: 0; }
+.top5 h2 { margin: 0 0 8px; font-size: 1.1rem; font-weight: 600; }
+.top5 ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.top5 li + li { border-top: 1px solid var(--line); }
+.top5 button { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; background: none; padding: 9px 4px; border-radius: 8px; }
+.top5 button:hover { background: var(--accent-soft); }
+.top5 .rank { color: var(--ink-soft); font-weight: 600; font-variant-numeric: tabular-nums; }
+.top5 .name { font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top5 .sub { color: var(--ink-soft); font-size: 0.85rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top5 .score .big { font-size: 1.15rem; }
+.top5 .empty { color: var(--ink-soft); font-size: 0.9rem; padding: 8px 4px; }
+
+/* expandable cards */
+.list { margin-top: 22px; }
+.list h2 { font-size: 1.1rem; font-weight: 600; margin: 0 0 10px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+.card:hover, .card.open { border-color: var(--accent); }
+.card.open { grid-column: 1 / -1; }
+.card-head { display: flex; flex-direction: column; gap: 2px; width: 100%; text-align: left; border: 0; background: none; padding: 12px 14px; border-radius: 12px; }
+.card-head .name { font-weight: 600; }
+.card-head .sub { color: var(--ink-soft); font-size: 0.88rem; }
+.card-head .score .big { font-size: 1.1rem; }
+.card-head .scores { gap: 10px; }
+.card-head .tap { color: var(--ink-soft); font-size: 0.78rem; margin-top: 4px; }
+.card.open .card-head .tap { display: none; }
+.card-body { padding: 0 16px 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.card-body p { margin: 0 0 8px; }
+.card-body .addr { color: var(--ink-soft); font-size: 0.9rem; }
+.card-body .ate, .card-body .recipe, .card-body .notes { white-space: pre-wrap; }
+.card-body strong { font-weight: 600; }
+.card-body .meta { color: var(--ink-soft); font-size: 0.85rem; margin-top: 10px; }
+.photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
 .photos figure { margin: 0; display: flex; flex-direction: column; gap: 4px; }
 .photos button { padding: 0; border: 0; background: var(--surface-2); border-radius: 10px; overflow: hidden; aspect-ratio: 1; }
 .photos img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .photos figcaption { font-size: 0.82rem; color: var(--ink-soft); line-height: 1.3; }
-.meta { color: var(--ink-soft); font-size: 0.85rem; margin-top: 12px; }
-.list { margin-top: 22px; }
-.list h2 { font-size: 1.1rem; font-weight: 600; margin: 0 0 10px; }
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
-.card { text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
-.card:hover, .card.selected { border-color: var(--accent); }
-.card .name { font-weight: 600; }
-.card .sub { color: var(--ink-soft); font-size: 0.88rem; }
-.card .score .big { font-size: 1.1rem; }
 .empty-state { color: var(--ink-soft); text-align: center; padding-block: 40px; }
 
 /* lightbox */
@@ -149,12 +167,15 @@ footer a { color: var(--ink-soft); }
 @media (max-width: 820px) { .admin-grid { grid-template-columns: minmax(0, 1fr); } }
 .panel { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; min-width: 0; }
 .panel h2 { margin: 0 0 12px; font-size: 1.15rem; font-weight: 600; }
+.panel.locked { opacity: 0.45; pointer-events: none; }
+.tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.tabs button { border: 1px solid var(--line); background: none; border-radius: 999px; padding: 6px 14px; font-weight: 600; color: var(--ink-soft); }
+.tabs button.on { background: var(--accent-soft); color: var(--ink); border-color: transparent; }
 .setup { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; }
 .setup summary { cursor: pointer; font-weight: 600; }
 .setup p { margin: 8px 0; font-size: 0.9rem; color: var(--ink-soft); }
 .setup ol { margin: 6px 0 10px; padding-left: 20px; font-size: 0.9rem; color: var(--ink-soft); }
 .setup .field { margin-bottom: 8px; }
-#review-form.locked { opacity: 0.45; pointer-events: none; }
 .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
 .field label { font-weight: 600; font-size: 0.85rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.06em; }
 .field .hint { font-size: 0.8rem; color: var(--ink-soft); }
@@ -162,6 +183,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="numb
   width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 9px 12px;
 }
 textarea { min-height: 90px; resize: vertical; }
+textarea.tall { min-height: 180px; }
 .row { display: flex; gap: 10px; flex-wrap: wrap; }
 .row > * { flex: 1 1 140px; min-width: 0; }
 .where-row { display: flex; gap: 8px; }
@@ -205,6 +227,7 @@ textarea { min-height: 90px; resize: vertical; }
     <nav class="links" aria-label="pages">
       <a href="#home" data-view="home">home</a>
       <a href="#food" data-view="food">reviews</a>
+      <a href="#cooking" data-view="cooking">home cooking</a>
     </nav>
   </div>
 </header>
@@ -234,14 +257,25 @@ textarea { min-height: 90px; resize: vertical; }
       <div class="map-card">
         <div id="food-map"></div>
         <div class="zoom-controls" data-map="food"><button type="button" data-zoom="in" aria-label="zoom in">+</button><button type="button" data-zoom="out" aria-label="zoom out">−</button><button type="button" class="reset" data-zoom="reset" aria-label="reset zoom">all</button></div>
-        <p class="map-note">zoom in to tell places apart · tap a pin to see what we thought</p>
+        <p class="map-note">zoom in to tell places apart · tap a pin to open its review</p>
       </div>
-      <div id="food-detail" class="detail empty">loading…</div>
+      <div class="top5">
+        <h2>top 5</h2>
+        <ol id="food-top"></ol>
+      </div>
     </div>
     <div class="list">
       <h2>every place so far</h2>
       <div id="food-cards" class="cards"></div>
     </div>
+  </section>
+
+  <section id="view-cooking" class="wrap" hidden>
+    <div class="section-head">
+      <h1>home cooking</h1>
+      <span class="count" id="cook-count"></span>
+    </div>
+    <div id="cook-cards" class="cards"></div>
   </section>
 
   <section id="view-admin" class="wrap" hidden>
@@ -264,7 +298,7 @@ textarea { min-height: 90px; resize: vertical; }
 
     <div id="admin" hidden>
       <div class="admin-top">
-        <div class="section-head" style="margin:0"><h1>log a place</h1></div>
+        <div class="section-head" style="margin:0"><h1>log something</h1></div>
         <div class="who">logged in as <strong id="admin-who"></strong> · <a href="#admin" id="logout">log out</a></div>
       </div>
 
@@ -289,70 +323,119 @@ textarea { min-height: 90px; resize: vertical; }
       </details>
 
       <div class="admin-grid">
-        <form id="review-form" class="panel" autocomplete="off">
-          <h2 id="form-title">new review</h2>
-          <input type="hidden" id="f-id">
-          <input type="hidden" id="f-lat">
-          <input type="hidden" id="f-lng">
-          <div class="field autocomplete">
-            <label for="f-name">restaurant</label>
-            <input id="f-name" type="text" placeholder="start typing the name…" required>
-            <div id="name-ac" class="ac-list" hidden></div>
-            <span class="hint" id="name-hint">pick it from the list and the address fills itself in</span>
+        <div class="panel" id="form-panel">
+          <div class="tabs" role="tablist">
+            <button type="button" data-tab="food" class="on" role="tab">restaurant</button>
+            <button type="button" data-tab="cooking" role="tab">home cooking</button>
           </div>
-          <div class="field">
-            <label for="f-address">address</label>
-            <input id="f-address" type="text" placeholder="fills in when you pick the restaurant">
-          </div>
-          <div class="field autocomplete">
-            <label for="f-city">where</label>
-            <div class="where-row">
-              <input id="f-city" type="text" placeholder="city, or an address to look up">
-              <button class="btn ghost small" type="button" id="geo-btn">find</button>
+
+          <form id="review-form" autocomplete="off">
+            <h2 id="form-title">new review</h2>
+            <input type="hidden" id="f-lat">
+            <input type="hidden" id="f-lng">
+            <div class="field autocomplete">
+              <label for="f-name">restaurant</label>
+              <input id="f-name" type="text" placeholder="start typing the name…" required>
+              <div id="name-ac" class="ac-list" hidden></div>
+              <span class="hint" id="name-hint">pick it from the list and the address fills itself in</span>
             </div>
-            <div id="ac" class="ac-list" hidden></div>
-            <span class="hint" id="loc-hint">set by the restaurant pick, or type a city, or tap the map</span>
-          </div>
-          <div class="mini-map" id="admin-map"></div>
-          <div class="field" style="margin-top:12px">
-            <label for="f-ate">what we ate</label>
-            <textarea id="f-ate" class="ate-box"></textarea>
-          </div>
-          <div class="field">
-            <label for="f-with">who mimi ate with</label>
-            <input id="f-with" type="text">
-          </div>
-          <div class="field">
-            <label for="f-score">mimi's score</label>
-            <div class="score-input">
-              <input id="f-score" type="number" min="0" max="10" step="0.1" inputmode="decimal">
-              <span>out of 10</span>
-            </div>
-          </div>
-          <div class="field">
-            <label for="f-notes">notes</label>
-            <textarea id="f-notes"></textarea>
-          </div>
-          <div class="row">
             <div class="field">
-              <label for="f-date">when</label>
-              <input id="f-date" type="date">
+              <label for="f-address">address</label>
+              <input id="f-address" type="text" placeholder="fills in when you pick the restaurant">
             </div>
-          </div>
-          <div class="field" id="photo-field">
-            <label for="f-photos">photos</label>
-            <input id="f-photos" type="file" accept="image/*" multiple>
-            <span class="hint">phone photos get shrunk before upload. add a little description under each one.</span>
-            <div id="photo-grid" class="photo-grid"></div>
-          </div>
-          <div class="row" style="align-items:center">
-            <button class="btn" type="submit" id="save-btn">save</button>
-            <button class="btn ghost" type="button" id="cancel-edit" hidden>cancel edit</button>
-          </div>
-          <div id="save-status" class="status"></div>
-        </form>
+            <div class="field autocomplete">
+              <label for="f-city">where</label>
+              <div class="where-row">
+                <input id="f-city" type="text" placeholder="city, or an address to look up">
+                <button class="btn ghost small" type="button" id="geo-btn">find</button>
+              </div>
+              <div id="ac" class="ac-list" hidden></div>
+              <span class="hint" id="loc-hint">set by the restaurant pick, or type a city, or tap the map</span>
+            </div>
+            <div class="mini-map" id="admin-map"></div>
+            <div class="field" style="margin-top:12px">
+              <label for="f-ate">what we ate</label>
+              <textarea id="f-ate"></textarea>
+            </div>
+            <div class="field">
+              <label for="f-with">who mimi ate with</label>
+              <input id="f-with" type="text">
+            </div>
+            <div class="field">
+              <label for="f-score">mimi's score</label>
+              <div class="score-input">
+                <input id="f-score" type="number" min="0" max="10" step="0.1" inputmode="decimal">
+                <span>out of 10</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="f-notes">notes</label>
+              <textarea id="f-notes"></textarea>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="f-date">when</label>
+                <input id="f-date" type="date">
+              </div>
+            </div>
+            <div class="field">
+              <label for="f-photos">photos</label>
+              <input id="f-photos" type="file" accept="image/*" multiple>
+              <span class="hint">phone photos get shrunk before upload. add a little description under each one.</span>
+              <div id="f-photo-grid" class="photo-grid"></div>
+            </div>
+            <div class="row" style="align-items:center">
+              <button class="btn" type="submit" id="f-save">save</button>
+              <button class="btn ghost" type="button" id="f-cancel" hidden>cancel edit</button>
+            </div>
+            <div id="f-status" class="status"></div>
+          </form>
+
+          <form id="dish-form" autocomplete="off" hidden>
+            <h2 id="dish-title">new dish</h2>
+            <div class="field">
+              <label for="d-name">dish</label>
+              <input id="d-name" type="text" required>
+            </div>
+            <div class="field">
+              <label for="d-recipe">recipe</label>
+              <textarea id="d-recipe" class="tall"></textarea>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="d-score-mimi">mimi's score</label>
+                <div class="score-input"><input id="d-score-mimi" type="number" min="0" max="10" step="0.1" inputmode="decimal"><span>/ 10</span></div>
+              </div>
+              <div class="field">
+                <label for="d-score-lydia">lydia's score</label>
+                <div class="score-input"><input id="d-score-lydia" type="number" min="0" max="10" step="0.1" inputmode="decimal"><span>/ 10</span></div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="d-notes">notes</label>
+              <textarea id="d-notes"></textarea>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="d-date">when</label>
+                <input id="d-date" type="date">
+              </div>
+            </div>
+            <div class="field">
+              <label for="d-photos">photos</label>
+              <input id="d-photos" type="file" accept="image/*" multiple>
+              <span class="hint">phone photos get shrunk before upload. add a little description under each one.</span>
+              <div id="d-photo-grid" class="photo-grid"></div>
+            </div>
+            <div class="row" style="align-items:center">
+              <button class="btn" type="submit" id="d-save">save</button>
+              <button class="btn ghost" type="button" id="d-cancel" hidden>cancel edit</button>
+            </div>
+            <div id="d-status" class="status"></div>
+          </form>
+        </div>
         <div class="panel">
-          <h2>already logged</h2>
+          <h2 id="list-title">already logged</h2>
           <div id="admin-list" class="admin-list"></div>
         </div>
       </div>
@@ -375,13 +458,17 @@ textarea { min-height: 90px; resize: vertical; }
   'use strict';
   const $ = (s, el) => (el || document).querySelector(s);
   const USERS = ['mimi', 'lydia'];
-  const GH = { owner: 'lydtong', repo: 'shmeeats', branch: 'main', dataPath: 'data/reviews.json', photoDir: 'photos', authPath: 'data/auth.json' };
+  const GH = { owner: 'lydtong', repo: 'shmeeats', branch: 'main', photoDir: 'photos', authPath: 'data/auth.json' };
+  const KINDS = {
+    food: { path: 'data/reviews.json', key: 'reviews', label: 'review', noun: 'place' },
+    cooking: { path: 'data/dishes.json', key: 'dishes', label: 'dish', noun: 'dish' },
+  };
   const SVGNS = 'http://www.w3.org/2000/svg';
   const STATE_ABBR = { 'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR', 'California': 'CA', 'Colorado': 'CO', 'Connecticut': 'CT', 'Delaware': 'DE', 'District of Columbia': 'DC', 'Florida': 'FL', 'Georgia': 'GA', 'Hawaii': 'HI', 'Idaho': 'ID', 'Illinois': 'IL', 'Indiana': 'IN', 'Iowa': 'IA', 'Kansas': 'KS', 'Kentucky': 'KY', 'Louisiana': 'LA', 'Maine': 'ME', 'Maryland': 'MD', 'Massachusetts': 'MA', 'Michigan': 'MI', 'Minnesota': 'MN', 'Mississippi': 'MS', 'Missouri': 'MO', 'Montana': 'MT', 'Nebraska': 'NE', 'Nevada': 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ', 'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', 'Ohio': 'OH', 'Oklahoma': 'OK', 'Oregon': 'OR', 'Pennsylvania': 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC', 'South Dakota': 'SD', 'Tennessee': 'TN', 'Texas': 'TX', 'Utah': 'UT', 'Vermont': 'VT', 'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY' };
   const abbrState = (s) => { if (!s) return ''; if (/^[A-Z]{2}$/.test(s)) return s; return STATE_ABBR[s] || s; };
 
   // ---------- data ----------
-  const DATA = { reviews: [], loaded: false };
+  const DATA = { reviews: [], dishes: [], loaded: false };
   const STATES = JSON.parse($('#shmee-states').textContent);
   const CITIES = JSON.parse($('#shmee-cities').textContent);
   const proj = (window.d3 && d3.geoAlbersUsa) ? d3.geoAlbersUsa().scale(1300).translate([487.5, 305]) : null;
@@ -401,16 +488,16 @@ textarea { min-height: 90px; resize: vertical; }
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d); if (!m) return d;
     return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   }
-  // score out of 10 (older entries had 1–5 stars; shown doubled)
+  const num = (v) => (v == null || v === '' || isNaN(Number(v)) ? null : Number(v));
+  // restaurant score out of 10 (older entries had 1–5 stars; shown doubled)
   function scoreOf(r) {
-    if (r.score != null && r.score !== '' && !isNaN(Number(r.score))) return Number(r.score);
+    const s = num(r.score); if (s != null) return s;
     if (Number(r.ratingMimi) > 0) return Number(r.ratingMimi) * 2;
     return null;
   }
   function fmtScore(n) { return (Math.round(n * 10) / 10).toString(); }
-  function scoreTag(r) {
-    const s = scoreOf(r);
-    return s == null ? '' : '<span class="score" aria-label="' + fmtScore(s) + ' out of 10"><span class="big">' + fmtScore(s) + '</span><span class="of">/ 10</span></span>';
+  function scoreTag(s, who) {
+    return s == null ? '' : '<span class="score" aria-label="' + (who ? who + ' ' : '') + fmtScore(s) + ' out of 10">' + (who ? '<span class="who">' + esc(who) + '</span>' : '') + '<span class="big">' + fmtScore(s) + '</span><span class="of">/ 10</span></span>';
   }
   const photoObj = (p) => (typeof p === 'string' ? { id: p, caption: '' } : { id: p.id, caption: p.caption || '' });
   const photosOf = (r) => (Array.isArray(r.photos) ? r.photos.map(photoObj) : []);
@@ -419,23 +506,40 @@ textarea { min-height: 90px; resize: vertical; }
   // thumbnails exist for photos uploaded after the thumbnail change; older ones fall back to the full file
   function thumbImg(id, alt) { return '<img src="' + esc(thumbUrl(id)) + '" alt="' + esc(alt || '') + '" decoding="async" data-full="' + esc(photoUrl(id)) + '">'; }
   document.addEventListener('error', (e) => { const im = e.target; if (im && im.tagName === 'IMG' && im.dataset.full && im.src !== im.dataset.full && !im.dataset.fell) { im.dataset.fell = '1'; im.src = im.dataset.full; } }, true);
-  function sortedReviews() {
-    return DATA.reviews.slice().sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.created || 0) - (a.created || 0));
+  const byDate = (a, b) => (b.date || '').localeCompare(a.date || '') || (b.created || 0) - (a.created || 0);
+  const sortedReviews = () => DATA.reviews.slice().sort(byDate);
+  const sortedDishes = () => DATA.dishes.slice().sort(byDate);
+  function listOf(kind) { return kind === 'food' ? DATA.reviews : DATA.dishes; }
+  function setList(kind, items) { DATA[KINDS[kind].key] = Array.isArray(items) ? items : []; DATA.loaded = true; }
+  function photosHtml(photos) {
+    if (!photos.length) return '';
+    return '<div class="photos">' + photos.map((p) => '<figure><button type="button" data-photo="' + esc(p.id) + '" data-cap="' + esc(p.caption) + '" aria-label="open photo">' + thumbImg(p.id, p.caption) + '</button>' + (p.caption ? '<figcaption>' + esc(p.caption) + '</figcaption>' : '') + '</figure>').join('') + '</div>';
   }
-  function setReviews(list) {
-    DATA.reviews = Array.isArray(list) ? list : [];
-    DATA.loaded = true;
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-photo]'); if (!b) return;
+    openLightbox(photoUrl(b.dataset.photo), b.dataset.cap || '');
+  });
+  function openLightbox(src, caption) {
+    const lb = document.createElement('button'); lb.className = 'lightbox'; lb.setAttribute('aria-label', 'close photo');
+    const img = document.createElement('img'); img.src = src; img.alt = caption || '';
+    lb.appendChild(img);
+    if (caption) { const c = document.createElement('span'); c.textContent = caption; lb.appendChild(c); }
+    lb.addEventListener('click', () => lb.remove());
+    document.body.appendChild(lb);
   }
 
-  // public load: the json file served next to this page
+  // public load: the json files served next to this page
   async function loadPublic() {
-    try {
-      const res = await fetch(GH.dataPath + '?t=' + Date.now(), { cache: 'no-store' });
-      if (res.ok) { const j = await res.json(); setReviews(j.reviews); }
-    } catch (e) {}
+    await Promise.all(Object.keys(KINDS).map(async (kind) => {
+      try {
+        const res = await fetch(KINDS[kind].path + '?t=' + Date.now(), { cache: 'no-store' });
+        if (res.ok) { const j = await res.json(); setList(kind, j[KINDS[kind].key]); }
+      } catch (e) {}
+    }));
     DATA.loaded = true;
     if (current === 'home') renderHomePins();
     if (current === 'food') renderFood();
+    if (current === 'cooking') renderCooking();
     if (current === 'admin') renderAdminList();
   }
 
@@ -445,7 +549,28 @@ textarea { min-height: 90px; resize: vertical; }
   let ghToken = ssGet('shmee_tok') || '';
   const token = () => ghToken;
   function setToken(t) { ghToken = t || ''; ssSet('shmee_tok', ghToken || null); }
+  async function gh(path, opts) {
+    opts = opts || {};
+    const headers = Object.assign({ 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }, opts.headers || {});
+    if (token()) headers['Authorization'] = 'Bearer ' + token();
+    const res = await fetch('https://api.github.com/repos/' + GH.owner + '/' + GH.repo + '/' + path, { method: opts.method || 'GET', headers, body: opts.body, cache: 'no-store' });
+    if (res.status === 404 && opts.allow404) return null;
+    if (!res.ok) {
+      const err = new Error('github ' + res.status); err.status = res.status;
+      try { err.body = await res.json(); } catch (e) {}
+      throw err;
+    }
+    return res.status === 204 ? null : res.json();
+  }
+  function b64FromBytes(bytes) {
+    let bin = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(bin);
+  }
   const enc = new TextEncoder();
+  const b64FromText = (s) => b64FromBytes(enc.encode(s));
+  const textFromB64 = (b) => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
+  const b64FromBlob = (blob) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
   const b64 = { to: (u8) => b64FromBytes(u8), from: (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0)) };
   async function deriveKey(password, salt, iter) {
     const base = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
@@ -480,45 +605,27 @@ textarea { min-height: 90px; resize: vertical; }
     if (cur && cur.sha) body.sha = cur.sha;
     await gh('contents/' + GH.authPath, { method: 'PUT', body: JSON.stringify(body) });
   }
-  async function gh(path, opts) {
-    opts = opts || {};
-    const headers = Object.assign({ 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }, opts.headers || {});
-    if (token()) headers['Authorization'] = 'Bearer ' + token();
-    const res = await fetch('https://api.github.com/repos/' + GH.owner + '/' + GH.repo + '/' + path, { method: opts.method || 'GET', headers, body: opts.body, cache: 'no-store' });
-    if (res.status === 404 && opts.allow404) return null;
-    if (!res.ok) {
-      const err = new Error('github ' + res.status); err.status = res.status;
-      try { err.body = await res.json(); } catch (e) {}
-      throw err;
-    }
-    return res.status === 204 ? null : res.json();
-  }
-  function b64FromBytes(bytes) {
-    let bin = '';
-    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-    return btoa(bin);
-  }
-  const b64FromText = (s) => b64FromBytes(new TextEncoder().encode(s));
-  const textFromB64 = (b) => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
-  const b64FromBlob = (blob) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
 
-  async function fetchLatest() {
-    const f = await gh('contents/' + GH.dataPath + '?ref=' + GH.branch, { allow404: true });
-    if (!f) return { reviews: [], sha: undefined };
-    let reviews = [];
-    try { const j = JSON.parse(textFromB64(f.content)); reviews = Array.isArray(j.reviews) ? j.reviews : []; } catch (e) {}
-    return { reviews, sha: f.sha };
+  async function fetchLatest(kind) {
+    const k = KINDS[kind];
+    const f = await gh('contents/' + k.path + '?ref=' + GH.branch, { allow404: true });
+    if (!f) return { items: [], sha: undefined };
+    let items = [];
+    try { const j = JSON.parse(textFromB64(f.content)); items = Array.isArray(j[k.key]) ? j[k.key] : []; } catch (e) {}
+    return { items, sha: f.sha };
   }
-  async function commitReviews(mutate, message) {
+  async function commitList(kind, mutate, message) {
     if (!token()) throw { code: 'no_token' };
+    const k = KINDS[kind];
     for (let attempt = 0; attempt < 2; attempt++) {
-      const latest = await fetchLatest();
-      const next = mutate(latest.reviews.slice());
-      const body = { message, branch: GH.branch, content: b64FromText(JSON.stringify({ reviews: next }, null, 1)) };
+      const latest = await fetchLatest(kind);
+      const next = mutate(latest.items.slice());
+      const doc = {}; doc[k.key] = next;
+      const body = { message, branch: GH.branch, content: b64FromText(JSON.stringify(doc, null, 1)) };
       if (latest.sha) body.sha = latest.sha;
       try {
-        await gh('contents/' + GH.dataPath, { method: 'PUT', body: JSON.stringify(body) });
-        setReviews(next); return;
+        await gh('contents/' + k.path, { method: 'PUT', body: JSON.stringify(body) });
+        setList(kind, next); return;
       } catch (e) { if (e.status === 409 && attempt === 0) continue; throw e; }
     }
   }
@@ -552,10 +659,27 @@ textarea { min-height: 90px; resize: vertical; }
     if (e && e.message && /fetch/i.test(e.message)) return 'could not reach github. are you online?';
     return 'could not save (' + ((e && (e.message || e.code)) || 'unknown') + ').';
   }
+  function loadImage(file) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };
+      img.src = url;
+    });
+  }
+  function shrink(img, max, quality) {
+    let w = img.naturalWidth, h = img.naturalHeight;
+    const s = Math.min(1, max / Math.max(w, h)); w = Math.round(w * s); h = Math.round(h * s);
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, 0, 0, w, h);
+    return new Promise((resolve) => c.toBlob((b) => resolve(b), 'image/jpeg', quality));
+  }
 
   // ---------- routing ----------
-  const views = ['home', 'food', 'admin'];
+  const views = ['home', 'food', 'cooking', 'admin'];
   let current = 'home';
+  let pendingOpen = null; // {kind, id} to expand after switching views
   function show(view) {
     if (!views.includes(view)) view = 'home';
     current = view;
@@ -565,39 +689,22 @@ textarea { min-height: 90px; resize: vertical; }
     });
     if (view === 'home') renderHome();
     if (view === 'food') renderFood();
+    if (view === 'cooking') renderCooking();
     if (view === 'admin') renderAdmin();
     window.scrollTo({ top: 0 });
+    if (pendingOpen) { const po = pendingOpen; pendingOpen = null; openCard(po.kind, po.id); }
   }
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[data-view]');
     if (!a) return;
     e.preventDefault();
     try { history.replaceState(null, '', '#' + a.dataset.view); } catch (err) {}
-    if (a.dataset.review) selectedId = a.dataset.review;
+    if (a.dataset.review) pendingOpen = { kind: 'food', id: a.dataset.review };
     show(a.dataset.view);
   });
   window.addEventListener('hashchange', () => show((location.hash || '#home').slice(1)));
 
-  // ---------- home: the outline map, zoomable ----------
-  let homeMap = null;
-  function renderHome() {
-    if (!homeMap) homeMap = buildMap($('#home-map'), { zoomable: true, name: 'home' });
-    renderHomePins();
-  }
-  function renderHomePins() {
-    if (!homeMap) return;
-    placePins(homeMap, sortedReviews(), { selectedId: homeSelected, onSelect: (r) => { homeSelected = r.id; renderHomePins(); renderHomeDetail(r); } });
-  }
-  let homeSelected = null;
-  function renderHomeDetail(r) {
-    const d = $('#home-detail');
-    const s = scoreOf(r);
-    d.hidden = false;
-    d.innerHTML = '<h2>' + esc(r.name) + '</h2><p class="where">' + esc(r.place || '') + '</p>' + (s != null ? scoreTag(r) : '') +
-      '<a href="#food" data-view="food" data-review="' + esc(r.id) + '">read the review →</a>';
-  }
-
-  // ---------- svg map (reviews + admin) ----------
+  // ---------- svg map ----------
   const MAPS = {};
   function buildMap(container, opts) {
     opts = opts || {};
@@ -690,8 +797,58 @@ textarea { min-height: 90px; resize: vertical; }
     });
   }
 
+  // ---------- home ----------
+  let homeMap = null, homeSelected = null;
+  function renderHome() {
+    if (!homeMap) homeMap = buildMap($('#home-map'), { zoomable: true, name: 'home' });
+    renderHomePins();
+  }
+  function renderHomePins() {
+    if (!homeMap) return;
+    placePins(homeMap, sortedReviews(), { selectedId: homeSelected, onSelect: (r) => { homeSelected = r.id; renderHomePins(); renderHomeDetail(r); } });
+  }
+  function renderHomeDetail(r) {
+    const d = $('#home-detail');
+    d.hidden = false;
+    d.innerHTML = '<h2>' + esc(r.name) + '</h2><p class="where">' + esc(r.place || '') + '</p>' + scoreTag(scoreOf(r)) +
+      '<a href="#food" data-view="food" data-review="' + esc(r.id) + '">read the review →</a>';
+  }
+
+  // ---------- expandable cards (shared by reviews + cooking) ----------
+  const openCards = { food: new Set(), cooking: new Set() };
+  function cardHtml(kind, r, head, body) {
+    const open = openCards[kind].has(r.id);
+    return '<article class="card' + (open ? ' open' : '') + '" data-kind="' + kind + '" data-id="' + esc(r.id) + '">' +
+      '<button type="button" class="card-head" aria-expanded="' + open + '">' + head + '<span class="tap">' + (open ? '' : 'tap for more') + '</span></button>' +
+      '<div class="card-body"' + (open ? '' : ' hidden') + '>' + (open ? body : '') + '</div></article>';
+  }
+  document.addEventListener('click', (e) => {
+    const h = e.target.closest('.card-head'); if (!h) return;
+    const card = h.closest('.card'); const kind = card.dataset.kind, id = card.dataset.id;
+    if (openCards[kind].has(id)) openCards[kind].delete(id); else openCards[kind].add(id);
+    if (kind === 'food') { selectedId = openCards.food.has(id) ? id : null; renderFood(); } else renderCooking();
+  });
+  function openCard(kind, id) {
+    openCards[kind].add(id);
+    if (kind === 'food') { selectedId = id; renderFood(); } else renderCooking();
+    const el = document.querySelector('.card[data-kind="' + kind + '"][data-id="' + CSS.escape(id) + '"]');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   // ---------- reviews page ----------
   let foodMap = null, selectedId = null;
+  function reviewHead(r) {
+    return '<span class="name">' + esc(r.name) + '</span>' +
+      '<span class="sub">' + esc(r.place || '') + (r.date ? ' · ' + esc(fmtDate(r.date)) : '') + '</span>' + scoreTag(scoreOf(r));
+  }
+  function reviewBody(r) {
+    return (r.address ? '<p class="addr">' + esc(r.address) + '</p>' : '') +
+      (r.ate ? '<p class="ate"><strong>we ate:</strong>' + (r.ate.includes('\n') ? '\n' : ' ') + esc(r.ate) + '</p>' : '') +
+      (r.with ? '<p class="with"><strong>mimi ate with:</strong> ' + esc(r.with) + '</p>' : '') +
+      (r.notes ? '<p class="notes">' + esc(r.notes) + '</p>' : '') +
+      photosHtml(photosOf(r)) +
+      '<div class="meta">' + (r.date ? esc(fmtDate(r.date)) : '') + (r.by ? ' · logged by ' + esc(r.by) : '') + '</div>';
+  }
   function renderFood() {
     const list = sortedReviews();
     const states = new Set();
@@ -700,68 +857,45 @@ textarea { min-height: 90px; resize: vertical; }
       ? list.length + (list.length === 1 ? ' place' : ' places') + (states.size ? ' · ' + states.size + (states.size === 1 ? ' state' : ' states') : '')
       : '';
     if (!foodMap) foodMap = buildMap($('#food-map'), { zoomable: true, name: 'food' });
-    placePins(foodMap, list, { selectedId, onSelect: (r) => selectReview(r.id) });
+    placePins(foodMap, list, { selectedId, onSelect: (r) => openCard('food', r.id) });
+    // top 5 by score
+    const top = list.filter((r) => scoreOf(r) != null).sort((a, b) => scoreOf(b) - scoreOf(a)).slice(0, 5);
+    $('#food-top').innerHTML = top.length
+      ? top.map((r, i) => '<li><button type="button" data-open="' + esc(r.id) + '"><span class="rank">' + (i + 1) + '</span><span><span class="name">' + esc(r.name) + '</span><span class="sub">' + esc(r.place || '') + '</span></span>' + scoreTag(scoreOf(r)) + '</button></li>').join('')
+      : '<li class="empty">' + (DATA.loaded ? 'no scores yet.' : 'loading…') + '</li>';
+    $('#food-top').querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => openCard('food', b.dataset.open)));
     const cards = $('#food-cards');
-    if (!list.length) {
-      cards.innerHTML = '';
-      $('#food-detail').className = 'detail empty';
-      $('#food-detail').textContent = DATA.loaded ? 'nothing logged yet. the cats are hungry.' : 'loading…';
-      return;
-    }
-    cards.innerHTML = list.map((r) => {
-      return '<button class="card' + (r.id === selectedId ? ' selected' : '') + '" data-id="' + esc(r.id) + '">' +
-        '<span class="name">' + esc(r.name) + '</span>' +
-        '<span class="sub">' + esc(r.place || '') + (r.date ? ' · ' + esc(fmtDate(r.date)) : '') + '</span>' +
-        scoreTag(r) + '</button>';
-    }).join('');
-    cards.querySelectorAll('.card').forEach((b) => b.addEventListener('click', () => selectReview(b.dataset.id)));
-    renderDetail();
+    if (!list.length) { cards.innerHTML = '<div class="empty-state">' + (DATA.loaded ? 'nothing logged yet. the cats are hungry.' : 'loading…') + '</div>'; return; }
+    cards.innerHTML = list.map((r) => cardHtml('food', r, reviewHead(r), reviewBody(r))).join('');
   }
-  function selectReview(id) {
-    selectedId = id;
-    renderFood();
-    const d = $('#food-detail');
-    if (window.innerWidth < 760) d.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // ---------- home cooking page ----------
+  function dishScores(r) {
+    const m = num(r.scoreMimi), l = num(r.scoreLydia);
+    return '<span class="scores">' + scoreTag(m, 'mimi') + scoreTag(l, 'lydia') + '</span>';
   }
-  function renderDetail() {
-    const d = $('#food-detail');
-    const r = DATA.reviews.find((x) => x.id === selectedId);
-    if (!r) { d.className = 'detail empty'; d.textContent = 'pick a pin on the map'; return; }
-    d.className = 'detail';
-    let html = '<h2>' + esc(r.name) + '</h2>' +
-      '<p class="where">' + esc(r.place || '') + '</p>' +
-      (r.address ? '<p class="addr">' + esc(r.address) + '</p>' : '<p class="addr"></p>') +
-      scoreTag(r) +
-      (r.ate ? '<p class="ate"><strong>we ate:</strong>' + (r.ate.includes('\n') ? '\n' : ' ') + esc(r.ate) + '</p>' : '') +
-      (r.with ? '<p class="with"><strong>mimi ate with:</strong> ' + esc(r.with) + '</p>' : '') +
-      (r.notes ? '<p class="notes">' + esc(r.notes) + '</p>' : '');
-    const photos = photosOf(r);
-    if (photos.length) {
-      html += '<div class="photos">' + photos.map((p) => '<figure><button type="button" data-photo="' + esc(p.id) + '" aria-label="open photo">' + thumbImg(p.id, p.caption) + '</button>' + (p.caption ? '<figcaption>' + esc(p.caption) + '</figcaption>' : '') + '</figure>').join('') + '</div>';
-    }
-    html += '<div class="meta">' + (r.date ? esc(fmtDate(r.date)) : '') + (r.by ? ' · logged by ' + esc(r.by) : '') + '</div>';
-    d.innerHTML = html;
-    d.querySelectorAll('[data-photo]').forEach((b) => b.addEventListener('click', () => {
-      const p = photos.find((x) => x.id === b.dataset.photo);
-      openLightbox(photoUrl(b.dataset.photo), p ? p.caption : '');
-    }));
+  function dishHead(r) {
+    return '<span class="name">' + esc(r.name) + '</span>' +
+      '<span class="sub">' + (r.date ? esc(fmtDate(r.date)) : '') + '</span>' + dishScores(r);
   }
-  function openLightbox(src, caption) {
-    const lb = document.createElement('button'); lb.className = 'lightbox'; lb.setAttribute('aria-label', 'close photo');
-    const img = document.createElement('img'); img.src = src; img.alt = caption || '';
-    lb.appendChild(img);
-    if (caption) { const c = document.createElement('span'); c.textContent = caption; lb.appendChild(c); }
-    lb.addEventListener('click', () => lb.remove());
-    document.body.appendChild(lb);
+  function dishBody(r) {
+    return (r.recipe ? '<p class="recipe"><strong>recipe:</strong>\n' + esc(r.recipe) + '</p>' : '') +
+      (r.notes ? '<p class="notes">' + esc(r.notes) + '</p>' : '') +
+      photosHtml(photosOf(r)) +
+      '<div class="meta">' + (r.date ? esc(fmtDate(r.date)) : '') + (r.by ? ' · logged by ' + esc(r.by) : '') + '</div>';
+  }
+  function renderCooking() {
+    const list = sortedDishes();
+    $('#cook-count').textContent = list.length ? list.length + (list.length === 1 ? ' dish' : ' dishes') : '';
+    const cards = $('#cook-cards');
+    if (!list.length) { cards.innerHTML = '<div class="empty-state">' + (DATA.loaded ? 'nothing cooked yet. the kitchen is quiet.' : 'loading…') + '</div>'; return; }
+    cards.innerHTML = list.map((r) => cardHtml('cooking', r, dishHead(r), dishBody(r))).join('');
   }
 
   // ---------- admin ----------
   let admin = lsGet('shmee_admin');
   if (!USERS.includes(admin)) admin = null;
-  let adminMap = null, editingId = null, firstTime = false;
-  let photoIds = [];      // {id, caption} already uploaded (editing)
-  let pendingFiles = [];  // {file, url, caption} not yet uploaded
-  let removedPhotos = []; // ids dropped while editing, deleted on save
+  let adminMap = null, firstTime = false, adminTab = 'food';
 
   function renderAdmin() {
     if (admin && !token() && !firstTime) admin = null;
@@ -777,12 +911,22 @@ textarea { min-height: 90px; resize: vertical; }
         setLocation(ll[1], ll[0], nearestCityLabel(ll[1], ll[0]));
       } });
     }
-    if (!$('#f-date').value && !editingId) $('#f-date').value = new Date().toISOString().slice(0, 10);
+    if (!$('#f-date').value && !food.editingId) $('#f-date').value = today();
+    if (!$('#d-date').value && !dish.editingId) $('#d-date').value = today();
     updatePreviewPin();
+    renderTabs();
     renderAdminList();
     renderSetup();
     refreshFromGithub();
   }
+  const today = () => new Date().toISOString().slice(0, 10);
+  function renderTabs() {
+    document.querySelectorAll('.tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === adminTab));
+    $('#review-form').hidden = adminTab !== 'food';
+    $('#dish-form').hidden = adminTab !== 'cooking';
+    $('#list-title').textContent = adminTab === 'food' ? 'places already logged' : 'dishes already logged';
+  }
+  document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => { adminTab = b.dataset.tab; renderTabs(); renderAdminList(); }));
   function renderSetup() {
     const has = !!token();
     $('#setup-summary').textContent = has ? 'password & github' : 'first time here: set the password';
@@ -790,15 +934,14 @@ textarea { min-height: 90px; resize: vertical; }
     $('#sec-intro').textContent = has
       ? 'change the password here, or paste a new github token if the old one expired.'
       : 'paste a github token and choose the admin password. the token is stored in the repo locked with that password, so the password alone logs you in from any browser.';
-    $('#review-form').classList.toggle('locked', !has);
+    $('#form-panel').classList.toggle('locked', !has);
   }
   async function refreshFromGithub() {
     if (!token()) return;
     try {
-      const latest = await fetchLatest();
-      setReviews(latest.reviews);
+      for (const kind of Object.keys(KINDS)) setList(kind, (await fetchLatest(kind)).items);
       renderAdminList();
-      $('#gh-status').textContent = 'connected. ' + latest.reviews.length + ' reviews in the repo.'; $('#gh-status').className = 'status';
+      $('#gh-status').textContent = 'connected. ' + DATA.reviews.length + ' places and ' + DATA.dishes.length + ' dishes in the repo.'; $('#gh-status').className = 'status';
     } catch (e) {
       $('#gh-status').textContent = ghErrorText(e); $('#gh-status').className = 'status err';
     }
@@ -849,7 +992,7 @@ textarea { min-height: 90px; resize: vertical; }
     } finally { btn.disabled = false; }
   });
 
-  // ---------- location helpers ----------
+  // ---------- location helpers (restaurant form) ----------
   function setLocation(lat, lng, label) {
     $('#f-lat').value = lat.toFixed(5); $('#f-lng').value = lng.toFixed(5);
     if (label != null) $('#f-city').value = label;
@@ -869,7 +1012,6 @@ textarea { min-height: 90px; resize: vertical; }
     const lat = Number($('#f-lat').value), lng = Number($('#f-lng').value);
     placePins(adminMap, lat && lng ? [{ id: 'preview', name: $('#f-name').value || 'here', lat, lng }] : [], { preview: true });
   }
-  // a generic dropdown bound to one input
   function makeAc(input, list, onPick) {
     let items = [], index = -1;
     function render(arr) {
@@ -894,8 +1036,6 @@ textarea { min-height: 90px; resize: vertical; }
     input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 150));
     return { render, hide: () => { list.hidden = true; }, get open() { return !list.hidden; } };
   }
-
-  // restaurant name → place lookup (photon, openstreetmap data)
   const nameInput = $('#f-name');
   const nameAc = makeAc(nameInput, $('#name-ac'), (c) => {
     if (!c) return;
@@ -917,7 +1057,6 @@ textarea { min-height: 90px; resize: vertical; }
     const seq = ++nameSeq;
     $('#name-hint').textContent = 'looking…';
     try {
-      // bias toward the pinned spot if there is one, else the middle of the country
       const lat = Number($('#f-lat').value) || 39.8, lng = Number($('#f-lng').value) || -98.6;
       const url = 'https://photon.komoot.io/api/?limit=10&lang=en&lat=' + lat + '&lon=' + lng + '&q=' + encodeURIComponent(q);
       const res = await fetch(url);
@@ -939,8 +1078,6 @@ textarea { min-height: 90px; resize: vertical; }
       if (seq === nameSeq) $('#name-hint').textContent = 'lookup failed. type the address below, or tap the map.';
     }
   }
-
-  // city autocomplete + address lookup on the "where" field
   const cityInput = $('#f-city');
   const cityAc = makeAc(cityInput, $('#ac'), (c) => {
     if (!c) return;
@@ -987,138 +1124,172 @@ textarea { min-height: 90px; resize: vertical; }
   }
   $('#geo-btn').addEventListener('click', geocode);
 
-  // photos
-  $('#f-photos').addEventListener('change', (e) => {
-    for (const f of e.target.files) pendingFiles.push({ file: f, url: URL.createObjectURL(f), caption: '' });
-    e.target.value = '';
-    renderPhotoGrid();
-  });
-  function renderPhotoGrid() {
-    const g = $('#photo-grid');
-    const cell = (src, cap, attr) => '<div class="ph"><div class="thumb"><img src="' + esc(src) + '" alt="" data-full="' + esc(src.replace(/-t\.jpg$/, '.jpg')) + '"><button type="button" class="x" ' + attr + ' aria-label="remove photo">×</button></div><input type="text" class="cap" ' + attr + ' value="' + esc(cap) + '"></div>';
-    g.innerHTML = photoIds.map((p, i) => cell(thumbUrl(p.id), p.caption, 'data-old="' + i + '"')).join('') +
-      pendingFiles.map((p, i) => cell(p.url, p.caption, 'data-new="' + i + '"')).join('');
-    g.querySelectorAll('.x').forEach((b) => b.addEventListener('click', () => {
-      if (b.dataset.old != null) removedPhotos.push(photoIds.splice(Number(b.dataset.old), 1)[0].id);
-      else pendingFiles.splice(Number(b.dataset.new), 1);
-      renderPhotoGrid();
-    }));
-    g.querySelectorAll('.cap').forEach((inp) => inp.addEventListener('input', () => {
-      if (inp.dataset.old != null) photoIds[Number(inp.dataset.old)].caption = inp.value;
-      else pendingFiles[Number(inp.dataset.new)].caption = inp.value;
-    }));
-  }
-  function loadImage(file) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      const url = URL.createObjectURL(file);
-      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
-      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };
-      img.src = url;
+  // ---------- photo picker (one per form) ----------
+  function makePhotoPicker(inputEl, gridEl) {
+    const st = { ids: [], pending: [], removed: [] };
+    inputEl.addEventListener('change', (e) => {
+      for (const f of e.target.files) st.pending.push({ file: f, url: URL.createObjectURL(f), caption: '' });
+      e.target.value = '';
+      render();
     });
-  }
-  function shrink(img, max, quality) {
-    let w = img.naturalWidth, h = img.naturalHeight;
-    const s = Math.min(1, max / Math.max(w, h)); w = Math.round(w * s); h = Math.round(h * s);
-    const c = document.createElement('canvas'); c.width = w; c.height = h;
-    c.getContext('2d').drawImage(img, 0, 0, w, h);
-    return new Promise((resolve) => c.toBlob((b) => resolve(b), 'image/jpeg', quality));
-  }
-
-  // form
-  const TEXT_FIELDS = ['f-id', 'f-lat', 'f-lng', 'f-name', 'f-address', 'f-city', 'f-ate', 'f-with', 'f-score', 'f-notes'];
-  function resetForm() {
-    editingId = null; photoIds = []; pendingFiles = []; removedPhotos = [];
-    TEXT_FIELDS.forEach((id) => { $('#' + id).value = ''; });
-    $('#f-date').value = new Date().toISOString().slice(0, 10);
-    $('#form-title').textContent = 'new review';
-    $('#cancel-edit').hidden = true;
-    $('#name-hint').textContent = 'pick it from the list and the address fills itself in';
-    $('#loc-hint').textContent = 'set by the restaurant pick, or type a city, or tap the map';
-    renderPhotoGrid(); updatePreviewPin();
-    ssSet('shmee_draft', null);
-  }
-  function loadForm(r) {
-    resetForm();
-    editingId = r.id;
-    $('#f-id').value = r.id; $('#f-name').value = r.name || ''; $('#f-address').value = r.address || ''; $('#f-city').value = r.place || '';
-    $('#f-ate').value = r.ate || ''; $('#f-with').value = r.with || ''; $('#f-notes').value = r.notes || ''; $('#f-date').value = r.date || '';
-    const s = scoreOf(r); $('#f-score').value = s == null ? '' : fmtScore(s);
-    photoIds = photosOf(r);
-    if (r.lat && r.lng) setLocation(Number(r.lat), Number(r.lng), null);
-    $('#form-title').textContent = 'editing ' + (r.name || '');
-    $('#cancel-edit').hidden = false;
-    renderPhotoGrid();
-    $('#review-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-  $('#cancel-edit').addEventListener('click', resetForm);
-
-  function readForm() {
-    const place = $('#f-city').value.trim();
-    const stm = /,\s*([A-Z]{2})$/.exec(place);
-    const sc = $('#f-score').value.trim();
+    function render() {
+      const cell = (src, full, cap, attr) => '<div class="ph"><div class="thumb"><img src="' + esc(src) + '" alt="" data-full="' + esc(full) + '"><button type="button" class="x" ' + attr + ' aria-label="remove photo">×</button></div><input type="text" class="cap" ' + attr + ' placeholder="description" value="' + esc(cap) + '"></div>';
+      gridEl.innerHTML = st.ids.map((p, i) => cell(thumbUrl(p.id), photoUrl(p.id), p.caption, 'data-old="' + i + '"')).join('') +
+        st.pending.map((p, i) => cell(p.url, p.url, p.caption, 'data-new="' + i + '"')).join('');
+      gridEl.querySelectorAll('.x').forEach((b) => b.addEventListener('click', () => {
+        if (b.dataset.old != null) st.removed.push(st.ids.splice(Number(b.dataset.old), 1)[0].id);
+        else st.pending.splice(Number(b.dataset.new), 1);
+        render();
+      }));
+      gridEl.querySelectorAll('.cap').forEach((inp) => inp.addEventListener('input', () => {
+        if (inp.dataset.old != null) st.ids[Number(inp.dataset.old)].caption = inp.value;
+        else st.pending[Number(inp.dataset.new)].caption = inp.value;
+      }));
+    }
     return {
-      id: editingId || ('r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
-      name: $('#f-name').value.trim(),
-      address: $('#f-address').value.trim(),
-      place, state: stm ? stm[1] : '',
-      lat: Number($('#f-lat').value), lng: Number($('#f-lng').value),
-      ate: $('#f-ate').value.trim(),
-      with: $('#f-with').value.trim(),
-      score: sc === '' ? null : Math.round(Math.max(0, Math.min(10, Number(sc))) * 10) / 10,
-      notes: $('#f-notes').value.trim(),
-      date: $('#f-date').value,
-      photos: photoIds.map((p) => ({ id: p.id, caption: p.caption.trim() })),
-      by: admin,
+      reset() { st.ids = []; st.pending = []; st.removed = []; render(); },
+      load(photos) { st.ids = photos; st.pending = []; st.removed = []; render(); },
+      get ids() { return st.ids; }, get pending() { return st.pending; }, get removed() { return st.removed; },
+      // upload pending files, returning the full photo list for the record
+      async flush(prefix, status) {
+        const out = st.ids.map((p) => ({ id: p.id, caption: p.caption.trim() }));
+        for (let i = 0; i < st.pending.length; i++) {
+          status('uploading photo ' + (i + 1) + ' of ' + st.pending.length + '…');
+          const id = prefix + '-' + Date.now().toString(36) + i;
+          await uploadPhoto(id, st.pending[i].file);
+          out.push({ id, caption: st.pending[i].caption.trim() });
+        }
+        return out;
+      },
+      async cleanup() { for (const id of st.removed) await deletePhoto(id); st.removed = []; },
     };
   }
-  function setStatus(msg, err) { const s = $('#save-status'); s.textContent = msg; s.className = 'status' + (err ? ' err' : ''); }
 
+  // ---------- the two forms ----------
+  function makeStatus(sel) { return (msg, err) => { const s = $(sel); s.textContent = msg; s.className = 'status' + (err ? ' err' : ''); }; }
+  const newId = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+  const food = { editingId: null, photos: makePhotoPicker($('#f-photos'), $('#f-photo-grid')), status: makeStatus('#f-status') };
+  const FOOD_FIELDS = ['f-lat', 'f-lng', 'f-name', 'f-address', 'f-city', 'f-ate', 'f-with', 'f-score', 'f-notes'];
+  function resetFood() {
+    food.editingId = null;
+    FOOD_FIELDS.forEach((id) => { $('#' + id).value = ''; });
+    $('#f-date').value = today();
+    $('#form-title').textContent = 'new review';
+    $('#f-cancel').hidden = true;
+    $('#name-hint').textContent = 'pick it from the list and the address fills itself in';
+    $('#loc-hint').textContent = 'set by the restaurant pick, or type a city, or tap the map';
+    food.photos.reset(); updatePreviewPin();
+    ssSet('shmee_draft', null);
+  }
+  function loadFood(r) {
+    resetFood();
+    food.editingId = r.id;
+    $('#f-name').value = r.name || ''; $('#f-address').value = r.address || ''; $('#f-city').value = r.place || '';
+    $('#f-ate').value = r.ate || ''; $('#f-with').value = r.with || ''; $('#f-notes').value = r.notes || ''; $('#f-date').value = r.date || '';
+    const s = scoreOf(r); $('#f-score').value = s == null ? '' : fmtScore(s);
+    food.photos.load(photosOf(r));
+    if (r.lat && r.lng) setLocation(Number(r.lat), Number(r.lng), null);
+    $('#form-title').textContent = 'editing ' + (r.name || '');
+    $('#f-cancel').hidden = false;
+    $('#review-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  $('#f-cancel').addEventListener('click', resetFood);
+  const clampScore = (v) => { const n = num(v); return n == null ? null : Math.round(Math.max(0, Math.min(10, n)) * 10) / 10; };
   $('#review-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const r = readForm();
-    if (!r.name) { setStatus('give it a name first.', true); return; }
-    if (!(r.lat && r.lng)) { setStatus('where is it? pick it from the list, type a city, or tap the map.', true); return; }
-    if ($('#f-score').value.trim() !== '' && isNaN(Number($('#f-score').value))) { setStatus('the score should be a number from 0 to 10, like 8.5.', true); return; }
-    if (!token()) { setStatus('set the password and token first (the box above).', true); $('#setup').open = true; return; }
-    const btn = $('#save-btn'); btn.disabled = true;
-    try {
-      for (let i = 0; i < pendingFiles.length; i++) {
-        setStatus('uploading photo ' + (i + 1) + ' of ' + pendingFiles.length + '…');
-        const id = r.id + '-' + Date.now().toString(36) + i;
-        await uploadPhoto(id, pendingFiles[i].file);
-        r.photos.push({ id, caption: pendingFiles[i].caption.trim() });
-      }
-      setStatus('saving…');
-      let wasEdit = false;
-      await commitReviews((list) => {
-        const idx = list.findIndex((x) => x.id === r.id);
-        if (idx >= 0) { wasEdit = true; const prev = list[idx]; delete prev.ratingMimi; delete prev.ratingLydia; list[idx] = Object.assign({}, prev, r, { updated: Date.now() }); }
-        else list.push(Object.assign(r, { created: Date.now() }));
-        return list;
-      }, (editingId ? 'edit ' : 'log ') + r.name);
-      for (const id of removedPhotos) await deletePhoto(id);
-      toast((wasEdit ? 'updated ' : 'logged ') + r.name);
-      resetForm(); renderAdminList();
-      setStatus('saved. the public pages pick it up in about a minute.');
-    } catch (err) {
-      setStatus(ghErrorText(err), true);
-    } finally { btn.disabled = false; }
+    const place = $('#f-city').value.trim();
+    const stm = /,\s*([A-Z]{2})$/.exec(place);
+    const r = {
+      id: food.editingId || newId('r'),
+      name: $('#f-name').value.trim(), address: $('#f-address').value.trim(),
+      place, state: stm ? stm[1] : '',
+      lat: Number($('#f-lat').value), lng: Number($('#f-lng').value),
+      ate: $('#f-ate').value.trim(), with: $('#f-with').value.trim(),
+      score: clampScore($('#f-score').value), notes: $('#f-notes').value.trim(), date: $('#f-date').value, by: admin,
+    };
+    if (!r.name) { food.status('give it a name first.', true); return; }
+    if (!(r.lat && r.lng)) { food.status('where is it? pick it from the list, type a city, or tap the map.', true); return; }
+    if ($('#f-score').value.trim() !== '' && num($('#f-score').value) == null) { food.status('the score should be a number from 0 to 10, like 8.5.', true); return; }
+    if (!token()) { food.status('set the password and token first (the box above).', true); $('#setup').open = true; return; }
+    await saveRecord('food', r, food, resetFood);
   });
 
-  // admin list
+  const dish = { editingId: null, photos: makePhotoPicker($('#d-photos'), $('#d-photo-grid')), status: makeStatus('#d-status') };
+  const DISH_FIELDS = ['d-name', 'd-recipe', 'd-score-mimi', 'd-score-lydia', 'd-notes'];
+  function resetDish() {
+    dish.editingId = null;
+    DISH_FIELDS.forEach((id) => { $('#' + id).value = ''; });
+    $('#d-date').value = today();
+    $('#dish-title').textContent = 'new dish';
+    $('#d-cancel').hidden = true;
+    dish.photos.reset();
+  }
+  function loadDish(r) {
+    resetDish();
+    dish.editingId = r.id;
+    $('#d-name').value = r.name || ''; $('#d-recipe').value = r.recipe || ''; $('#d-notes').value = r.notes || ''; $('#d-date').value = r.date || '';
+    const m = num(r.scoreMimi), l = num(r.scoreLydia);
+    $('#d-score-mimi').value = m == null ? '' : fmtScore(m); $('#d-score-lydia').value = l == null ? '' : fmtScore(l);
+    dish.photos.load(photosOf(r));
+    $('#dish-title').textContent = 'editing ' + (r.name || '');
+    $('#d-cancel').hidden = false;
+    $('#dish-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  $('#d-cancel').addEventListener('click', resetDish);
+  $('#dish-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const r = {
+      id: dish.editingId || newId('d'),
+      name: $('#d-name').value.trim(), recipe: $('#d-recipe').value.trim(),
+      scoreMimi: clampScore($('#d-score-mimi').value), scoreLydia: clampScore($('#d-score-lydia').value),
+      notes: $('#d-notes').value.trim(), date: $('#d-date').value, by: admin,
+    };
+    if (!r.name) { dish.status('give the dish a name first.', true); return; }
+    for (const id of ['d-score-mimi', 'd-score-lydia']) if ($('#' + id).value.trim() !== '' && num($('#' + id).value) == null) { dish.status('scores should be numbers from 0 to 10, like 8.5.', true); return; }
+    if (!token()) { dish.status('set the password and token first (the box above).', true); $('#setup').open = true; return; }
+    await saveRecord('cooking', r, dish, resetDish);
+  });
+
+  async function saveRecord(kind, r, form, reset) {
+    const btn = $(kind === 'food' ? '#f-save' : '#d-save'); btn.disabled = true;
+    const wasEdit = !!form.editingId;
+    try {
+      r.photos = await form.photos.flush(r.id, form.status);
+      form.status('saving…');
+      await commitList(kind, (list) => {
+        const idx = list.findIndex((x) => x.id === r.id);
+        if (idx >= 0) { const prev = list[idx]; delete prev.ratingMimi; delete prev.ratingLydia; list[idx] = Object.assign({}, prev, r, { updated: Date.now() }); }
+        else list.push(Object.assign(r, { created: Date.now() }));
+        return list;
+      }, (wasEdit ? 'edit ' : 'log ') + r.name);
+      await form.photos.cleanup();
+      toast((wasEdit ? 'updated ' : 'logged ') + r.name);
+      reset(); renderAdminList();
+      form.status('saved. the public pages pick it up in about a minute.');
+    } catch (err) {
+      form.status(ghErrorText(err), true);
+    } finally { btn.disabled = false; }
+  }
+
+  // admin list for the active tab
   function renderAdminList() {
-    const list = sortedReviews();
+    const kind = adminTab;
+    const list = (kind === 'food' ? sortedReviews() : sortedDishes());
     const el = $('#admin-list');
     if (!list.length) { el.innerHTML = '<div class="empty-state">' + (DATA.loaded ? 'nothing yet. log the first one!' : 'loading…') + '</div>'; return; }
     el.innerHTML = list.map((r) => {
-      const s = scoreOf(r);
+      const sub = kind === 'food'
+        ? esc(r.place || '') + (r.date ? ' · ' + esc(fmtDate(r.date)) : '')
+        : [num(r.scoreMimi) != null ? 'mimi ' + fmtScore(num(r.scoreMimi)) : '', num(r.scoreLydia) != null ? 'lydia ' + fmtScore(num(r.scoreLydia)) : '', r.date ? esc(fmtDate(r.date)) : ''].filter(Boolean).join(' · ');
+      const sc = kind === 'food' && scoreOf(r) != null ? ' <span class="s">' + fmtScore(scoreOf(r)) + ' / 10</span>' : '';
       return '<div class="admin-item" data-id="' + esc(r.id) + '">' +
-        '<div><div class="n">' + esc(r.name) + (s != null ? ' <span class="s">' + fmtScore(s) + ' / 10</span>' : '') + '</div><div class="s">' + esc(r.place || '') + (r.date ? ' · ' + esc(fmtDate(r.date)) : '') + '</div></div>' +
+        '<div><div class="n">' + esc(r.name) + sc + '</div><div class="s">' + sub + '</div></div>' +
         '<div class="acts"><button type="button" class="btn ghost small" data-edit>edit</button><button type="button" class="btn danger small" data-del>delete</button></div></div>';
     }).join('');
     el.querySelectorAll('[data-edit]').forEach((b) => b.addEventListener('click', () => {
-      const r = DATA.reviews.find((x) => x.id === b.closest('.admin-item').dataset.id); if (r) loadForm(r);
+      const r = listOf(kind).find((x) => x.id === b.closest('.admin-item').dataset.id); if (!r) return;
+      if (kind === 'food') loadFood(r); else loadDish(r);
     }));
     el.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', () => {
       const item = b.closest('.admin-item'); const acts = item.querySelector('.acts');
@@ -1126,35 +1297,35 @@ textarea { min-height: 90px; resize: vertical; }
       acts.querySelector('[data-no]').addEventListener('click', renderAdminList);
       acts.querySelector('[data-yes]').addEventListener('click', async () => {
         const id = item.dataset.id;
-        const r = DATA.reviews.find((x) => x.id === id);
+        const r = listOf(kind).find((x) => x.id === id);
         if (!r) return;
         acts.innerHTML = '<span class="s">deleting…</span>';
         try {
-          await commitReviews((list) => list.filter((x) => x.id !== id), 'delete ' + r.name);
+          await commitList(kind, (list) => list.filter((x) => x.id !== id), 'delete ' + r.name);
           for (const p of photosOf(r)) await deletePhoto(p.id);
           toast('deleted ' + r.name);
           renderAdminList();
         } catch (err) {
           renderAdminList();
-          setStatus(ghErrorText(err), true);
+          (kind === 'food' ? food : dish).status(ghErrorText(err), true);
         }
       });
     }));
   }
 
-  // draft stash so a reload does not eat a half-written review
+  // draft stash for the restaurant form so a reload does not eat a half-written review
   ['f-name', 'f-address', 'f-city', 'f-ate', 'f-with', 'f-score', 'f-notes', 'f-date'].forEach((id) => {
     $('#' + id).addEventListener('input', () => {
-      if (editingId) return;
+      if (food.editingId) return;
       const d = {};
-      TEXT_FIELDS.concat(['f-date']).forEach((k) => { d[k] = $('#' + k).value; });
+      FOOD_FIELDS.concat(['f-date']).forEach((k) => { d[k] = $('#' + k).value; });
       ssSet('shmee_draft', JSON.stringify(d));
     });
   });
   (function restoreDraft() {
     try {
       const d = JSON.parse(ssGet('shmee_draft') || 'null'); if (!d) return;
-      Object.keys(d).forEach((k) => { if (k !== 'f-id' && $('#' + k)) $('#' + k).value = d[k] || ''; });
+      Object.keys(d).forEach((k) => { if ($('#' + k)) $('#' + k).value = d[k] || ''; });
     } catch (e) {}
   })();
 
