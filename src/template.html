@@ -381,7 +381,7 @@ textarea.tall { min-height: 180px; }
             </div>
             <div class="field">
               <label for="f-photos">photos</label>
-              <input id="f-photos" type="file" accept="image/*" multiple>
+              <input id="f-photos" type="file" accept="image/*,.heic,.heif" multiple>
               <span class="hint">phone photos get shrunk before upload. add a little description under each one.</span>
               <div id="f-photo-grid" class="photo-grid"></div>
             </div>
@@ -424,7 +424,7 @@ textarea.tall { min-height: 180px; }
             </div>
             <div class="field">
               <label for="d-photos">photos</label>
-              <input id="d-photos" type="file" accept="image/*" multiple>
+              <input id="d-photos" type="file" accept="image/*,.heic,.heif" multiple>
               <span class="hint">phone photos get shrunk before upload. add a little description under each one.</span>
               <div id="d-photo-grid" class="photo-grid"></div>
             </div>
@@ -661,7 +661,36 @@ textarea.tall { min-height: 180px; }
     if (e && e.message && /fetch/i.test(e.message)) return 'could not reach github. are you online?';
     return 'could not save (' + ((e && (e.message || e.code)) || 'unknown') + ').';
   }
+  // heic/heif: safari reads it natively; other browsers get a converter loaded on demand
+  const looksHeic = (file) => /heic|heif/i.test(file.type || '') || /\.(heic|heif)$/i.test(file.name || '');
+  let heicLib = null;
+  function loadHeicLib() {
+    if (!heicLib) heicLib = new Promise((resolve, reject) => {
+      if (window.heic2any) return resolve(window.heic2any);
+      const sc = document.createElement('script');
+      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/heic2any/0.0.4/heic2any.min.js';
+      sc.onload = () => resolve(window.heic2any); sc.onerror = () => { heicLib = null; reject(new Error('heic converter failed to load')); };
+      document.head.appendChild(sc);
+    });
+    return heicLib;
+  }
+  async function nativeDecodes(file) {
+    try { const im = await decodeNative(file); freeImage(im); return true; } catch (e) { return false; }
+  }
+  // returns a jpeg File when the browser cannot read the original (heic on chrome and friends)
+  async function normalizeFile(file) {
+    if (!looksHeic(file) && (file.type || '').startsWith('image/')) return file;
+    if (await nativeDecodes(file)) return file;
+    const heic2any = await loadHeicLib();
+    const out = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 });
+    const blob = Array.isArray(out) ? out[0] : out;
+    return new File([blob], (file.name || 'photo').replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+  }
   async function decodeImage(file) {
+    if (looksHeic(file)) file = await normalizeFile(file);
+    return decodeNative(file);
+  }
+  async function decodeNative(file) {
     if (window.createImageBitmap) {
       try { return await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch (e) {}
       try { return await createImageBitmap(file); } catch (e) {}
@@ -1146,11 +1175,15 @@ textarea.tall { min-height: 180px; }
       (async () => {
         for (const p of added) {
           try {
+            if (looksHeic(p.file)) {
+              const w = gridEl.querySelector('.thumb[data-key="' + p.key + '"] .ph-wait'); if (w) w.textContent = 'converting heic…';
+              p.file = await normalizeFile(p.file);
+            }
             const im = await decodeImage(p.file);
             const small = await shrink(im, 360, 0.75);
             freeImage(im);
             p.url = URL.createObjectURL(small);
-          } catch (err) { p.url = ''; p.failed = true; }
+          } catch (err) { p.url = ''; p.failed = true; console.warn('photo preview failed', err); }
           const box = gridEl.querySelector('.thumb[data-key="' + p.key + '"]');
           if (!box) continue;
           const ph = box.querySelector('.ph-wait'); if (ph) ph.remove();
