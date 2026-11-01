@@ -8,7 +8,6 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='%2337895a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 /* layout: one quiet column; the maps are the only wide things. */
 :root {
@@ -74,18 +73,14 @@ footer a { color: var(--ink-soft); }
 .home { text-align: center; padding-block: clamp(32px, 9vh, 96px) 40px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .home .logo { width: min(420px, 82vw); }
 .wordmark { font-size: clamp(2.4rem, 8vw, 4.2rem); font-weight: 500; letter-spacing: -0.02em; margin: 0; line-height: 1; }
-.home-map-wrap { width: 100%; margin-top: 28px; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 10px; }
-.home-map { width: 100%; height: clamp(380px, 65vh, 720px); border-radius: 10px; overflow: hidden; background: var(--surface-2); }
-.home-map:empty::after { content: "the map is loading…"; display: grid; place-items: center; height: 100%; color: var(--ink-soft); }
-.leaflet-container { font-family: var(--font); font-size: 0.95rem; background: var(--surface-2); }
-.home-map .leaflet-tile-pane { filter: grayscale(0.45) sepia(0.12) hue-rotate(45deg) saturate(0.85); }
-.leaflet-popup-content-wrapper { border-radius: 12px; box-shadow: var(--shadow); color: var(--ink); }
-.leaflet-popup-content { margin: 12px 16px; line-height: 1.4; }
-.leaflet-popup-content .pp-name { font-weight: 600; display: block; }
-.leaflet-popup-content .pp-sub { color: var(--ink-soft); font-size: 0.88rem; display: block; }
-.leaflet-popup-content .pp-link { display: inline-block; margin-top: 6px; color: var(--accent); font-weight: 600; text-decoration: none; }
-.leaflet-bar a { color: var(--ink); }
-.leaflet-control-attribution { font-family: var(--font); font-size: 0.7rem; }
+.home-map-wrap { width: 100%; margin-top: 28px; text-align: left; display: flex; flex-direction: column; gap: 12px; }
+.home-map-wrap .map-card svg { max-height: 72vh; }
+.detail.mini { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; padding: 14px 18px; }
+.detail.mini h2 { font-size: 1.15rem; margin: 0; }
+.detail.mini .where { margin: 0; }
+.detail.mini .score { margin: 0; }
+.detail.mini .score .big { font-size: 1.2rem; }
+.detail.mini a { color: var(--accent); font-weight: 600; text-decoration: none; margin-left: auto; }
 
 /* reviews */
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-block: 8px 12px; }
@@ -93,9 +88,16 @@ footer a { color: var(--ink-soft); }
 .section-head .count { color: var(--ink-soft); font-weight: 500; }
 .food-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); gap: 18px; align-items: start; }
 @media (max-width: 760px) { .food-grid { grid-template-columns: minmax(0, 1fr); } }
-.map-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 10px; min-width: 0; }
-.map-card svg { width: 100%; height: auto; display: block; }
-.state { fill: var(--map-fill); stroke: var(--map-line); stroke-width: 1; }
+.map-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 10px; min-width: 0; position: relative; }
+.map-card svg { width: 100%; height: auto; display: block; border-radius: 10px; }
+.map-card svg.zoomable { cursor: grab; touch-action: none; }
+.map-card svg.zoomable:active { cursor: grabbing; }
+.zoom-controls { position: absolute; top: 18px; left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.zoom-controls button { width: 32px; height: 32px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; font-weight: 600; line-height: 1; color: var(--ink); }
+.zoom-controls button:hover { background: var(--accent-soft); }
+.zoom-controls button.reset { font-size: 0.7rem; }
+.state { fill: var(--map-fill); stroke: var(--map-line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.pin circle { vector-effect: none; }
 .pin { cursor: pointer; }
 .pin circle { fill: var(--pin); stroke: var(--pin-ring); stroke-width: 2.5; transition: r 0.15s ease; }
 .pin:hover circle, .pin.selected circle { r: 10; }
@@ -209,8 +211,12 @@ textarea { min-height: 90px; resize: vertical; }
       <div class="logo" role="img" aria-label="two cats, drawn by hand"></div>
       <h1 class="wordmark">shmeeats</h1>
       <div class="home-map-wrap">
-        <div id="home-map" class="home-map" aria-label="map of every place, zoomable"></div>
-        <p class="map-note">scroll or pinch to zoom · tap a pin</p>
+        <div class="map-card">
+          <div id="home-map"></div>
+          <div class="zoom-controls" data-map="home"><button type="button" data-zoom="in" aria-label="zoom in">+</button><button type="button" data-zoom="out" aria-label="zoom out">−</button><button type="button" class="reset" data-zoom="reset" aria-label="reset zoom">all</button></div>
+          <p class="map-note">scroll, pinch or double-tap to zoom · drag to move · tap a pin</p>
+        </div>
+        <div id="home-detail" class="detail mini" hidden></div>
       </div>
     </div>
   </section>
@@ -223,7 +229,8 @@ textarea { min-height: 90px; resize: vertical; }
     <div class="food-grid">
       <div class="map-card">
         <div id="food-map"></div>
-        <p class="map-note">tap a pin to see what we thought</p>
+        <div class="zoom-controls" data-map="food"><button type="button" data-zoom="in" aria-label="zoom in">+</button><button type="button" data-zoom="out" aria-label="zoom out">−</button><button type="button" class="reset" data-zoom="reset" aria-label="reset zoom">all</button></div>
+        <p class="map-note">zoom in to tell places apart · tap a pin to see what we thought</p>
       </div>
       <div id="food-detail" class="detail empty">loading…</div>
     </div>
@@ -356,7 +363,6 @@ textarea { min-height: 90px; resize: vertical; }
 <script id="shmee-states" type="application/json">__STATES__</script>
 <script id="shmee-cities" type="application/json">__CITIES__</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 (function () {
   'use strict';
@@ -513,71 +519,85 @@ textarea { min-height: 90px; resize: vertical; }
   });
   window.addEventListener('hashchange', () => show((location.hash || '#home').slice(1)));
 
-  // ---------- home: zoomable map ----------
-  let homeMap = null, homeLayer = null;
+  // ---------- home: the outline map, zoomable ----------
+  let homeMap = null;
   function renderHome() {
-    const el = $('#home-map');
-    if (!window.L) { el.textContent = 'the map could not load. check the connection and refresh.'; return; }
-    if (!homeMap) {
-      homeMap = L.map(el, { scrollWheelZoom: true, worldCopyJump: true, zoomSnap: 0.5 }).setView([39.5, -98.35], 4);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
-      }).addTo(homeMap);
-      homeLayer = L.layerGroup().addTo(homeMap);
-    }
-    setTimeout(() => homeMap.invalidateSize(), 0);
+    if (!homeMap) homeMap = buildMap($('#home-map'), { zoomable: true, name: 'home' });
     renderHomePins();
   }
   function renderHomePins() {
     if (!homeMap) return;
-    homeLayer.clearLayers();
-    const pts = [];
-    sortedReviews().forEach((r) => {
-      const lat = Number(r.lat), lng = Number(r.lng);
-      if (!lat || !lng) return;
-      pts.push([lat, lng]);
-      const m = L.circleMarker([lat, lng], { radius: 8, color: '#ffffff', weight: 2.5, fillColor: '#2f7b4f', fillOpacity: 1 });
-      const s = scoreOf(r);
-      m.bindPopup('<span class="pp-name">' + esc(r.name) + '</span>' +
-        '<span class="pp-sub">' + esc(r.address || r.place || '') + (s != null ? ' · ' + fmtScore(s) + ' / 10' : '') + '</span>' +
-        '<a class="pp-link" href="#food" data-view="food" data-review="' + esc(r.id) + '">read the review →</a>');
-      m.on('mouseover', () => m.setStyle({ radius: 10 }));
-      m.on('mouseout', () => m.setStyle({ radius: 8 }));
-      homeLayer.addLayer(m);
-    });
-    if (pts.length) homeMap.fitBounds(pts, { padding: [40, 40], maxZoom: 11 });
-    else homeMap.setView([39.5, -98.35], 4);
+    placePins(homeMap, sortedReviews(), { selectedId: homeSelected, onSelect: (r) => { homeSelected = r.id; renderHomePins(); renderHomeDetail(r); } });
+  }
+  let homeSelected = null;
+  function renderHomeDetail(r) {
+    const d = $('#home-detail');
+    const s = scoreOf(r);
+    d.hidden = false;
+    d.innerHTML = '<h2>' + esc(r.name) + '</h2><p class="where">' + esc(r.place || '') + '</p>' + (s != null ? scoreTag(r) : '') +
+      '<a href="#food" data-view="food" data-review="' + esc(r.id) + '">read the review →</a>';
   }
 
   // ---------- svg map (reviews + admin) ----------
+  const MAPS = {};
   function buildMap(container, opts) {
+    opts = opts || {};
     container.innerHTML = '';
     const svg = document.createElementNS(SVGNS, 'svg');
     svg.setAttribute('viewBox', '0 0 975 610');
     svg.setAttribute('role', 'img');
     svg.setAttribute('aria-label', 'map of the united states');
+    const viewport = document.createElementNS(SVGNS, 'g');
     const g = document.createElementNS(SVGNS, 'g');
+    g.setAttribute('class', 'states');
     STATES.forEach((s) => {
       const p = document.createElementNS(SVGNS, 'path');
       p.setAttribute('d', s.d); p.setAttribute('class', 'state');
       const t = document.createElementNS(SVGNS, 'title'); t.textContent = s.n; p.appendChild(t);
       g.appendChild(p);
     });
-    svg.appendChild(g);
+    viewport.appendChild(g);
     const pins = document.createElementNS(SVGNS, 'g');
     pins.setAttribute('class', 'pins');
-    svg.appendChild(pins);
+    viewport.appendChild(pins);
+    svg.appendChild(viewport);
     container.appendChild(svg);
-    if (opts && opts.onClick) {
+    const map = { svg, pins, viewport, states: g, k: 1 };
+    if (opts.onClick) {
       svg.addEventListener('click', (e) => {
         if (e.target.closest('.pin')) return;
-        const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM().inverse());
+        const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(viewport.getScreenCTM().inverse());
         opts.onClick(pt.x, pt.y);
       });
     }
-    return { svg, pins };
+    if (opts.zoomable && window.d3 && d3.zoom) {
+      svg.classList.add('zoomable');
+      map.zoom = d3.zoom().scaleExtent([1, 60]).translateExtent([[-100, -60], [1075, 670]]).on('zoom', (ev) => {
+        map.k = ev.transform.k;
+        viewport.setAttribute('transform', ev.transform.toString());
+        rescalePins(map);
+      });
+      d3.select(svg).call(map.zoom);
+    }
+    if (opts.name) MAPS[opts.name] = map;
+    return map;
   }
+  function rescalePins(map) {
+    const inv = 1 / map.k;
+    map.pins.querySelectorAll('.pin').forEach((gp) => {
+      gp.setAttribute('transform', 'translate(' + gp.dataset.x + ',' + gp.dataset.y + ') scale(' + inv.toFixed(4) + ')');
+    });
+  }
+  document.querySelectorAll('.zoom-controls').forEach((ctl) => {
+    ctl.addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      const map = MAPS[ctl.dataset.map]; if (!map || !map.zoom) return;
+      const sel = d3.select(map.svg).transition().duration(250);
+      if (b.dataset.zoom === 'in') sel.call(map.zoom.scaleBy, 1.8);
+      else if (b.dataset.zoom === 'out') sel.call(map.zoom.scaleBy, 1 / 1.8);
+      else sel.call(map.zoom.transform, d3.zoomIdentity);
+    });
+  });
   function placePins(map, items, opts) {
     map.pins.innerHTML = '';
     if (!proj) return;
@@ -586,17 +606,18 @@ textarea { min-height: 90px; resize: vertical; }
     items.forEach((r) => {
       const xy = proj([Number(r.lng), Number(r.lat)]);
       if (!xy) return;
-      const key = Math.round(xy[0] / 8) + ':' + Math.round(xy[1] / 8);
+      const key = Math.round(xy[0] * 2) + ':' + Math.round(xy[1] * 2);
       groups[key] = (groups[key] || 0) + 1;
       placed.push({ r, xy, key, i: groups[key] - 1 });
     });
     placed.forEach(({ r, xy, key, i }) => {
       let [x, y] = xy;
       const n = groups[key];
-      if (n > 1) { const a = (i / n) * Math.PI * 2; x += Math.cos(a) * 9; y += Math.sin(a) * 9; }
+      if (n > 1) { const a = (i / n) * Math.PI * 2; x += Math.cos(a) * 2.5; y += Math.sin(a) * 2.5; }
       const gp = document.createElementNS(SVGNS, 'g');
       gp.setAttribute('class', 'pin' + (opts && opts.selectedId === r.id ? ' selected' : '') + (opts && opts.preview ? ' preview' : ''));
-      gp.setAttribute('transform', 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ')');
+      gp.dataset.x = x.toFixed(2); gp.dataset.y = y.toFixed(2);
+      gp.setAttribute('transform', 'translate(' + x.toFixed(2) + ',' + y.toFixed(2) + ') scale(' + (1 / (map.k || 1)).toFixed(4) + ')');
       gp.setAttribute('tabindex', '0'); gp.setAttribute('role', 'button');
       const halo = document.createElementNS(SVGNS, 'circle'); halo.setAttribute('class', 'halo'); halo.setAttribute('r', '16');
       const c = document.createElementNS(SVGNS, 'circle'); c.setAttribute('r', '7');
@@ -619,7 +640,7 @@ textarea { min-height: 90px; resize: vertical; }
     $('#food-count').textContent = list.length
       ? list.length + (list.length === 1 ? ' place' : ' places') + (states.size ? ' · ' + states.size + (states.size === 1 ? ' state' : ' states') : '')
       : '';
-    if (!foodMap) foodMap = buildMap($('#food-map'));
+    if (!foodMap) foodMap = buildMap($('#food-map'), { zoomable: true, name: 'food' });
     placePins(foodMap, list, { selectedId, onSelect: (r) => selectReview(r.id) });
     const cards = $('#food-cards');
     if (!list.length) {
