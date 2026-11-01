@@ -8,15 +8,20 @@
    "state": "PA",
    "lat": 39.97373,
    "lng": -75.13391,
-   "ate": "Fatteh",
+   "ate": "Fatteh - warm chickpeas, eggplant, crispy pita & tehina yogurt + almonds, cashews & brown butter",
    "with": "",
    "score": null,
    "notes": "",
    "date": "2026-11-01",
-   "photos": [],
+   "photos": [
+    {
+     "id": "rmvyf55uiqd4m-mvyf7crn0",
+     "caption": "mimi"
+    }
+   ],
    "by": "mimi",
    "created": 1793573147867,
-   "updated": 1793573162624
+   "updated": 1793573251842
   }
  ]
 }
