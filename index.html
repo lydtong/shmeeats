@@ -831,7 +831,7 @@ textarea { min-height: 90px; resize: vertical; }
     const pasted = $('#sec-token').value.trim();
     const tok = pasted || token() || lsGet('shmee_gh_token') || '';
     const p1 = $('#sec-pass').value, p2 = $('#sec-pass2').value;
-    if (!tok) { st.textContent = 'paste a github token first (see the steps above).'; st.className = 'status err'; return; }
+    if (!tok) { st.textContent = 'this browser has no github token saved, so paste one in the token box: the one you made before if you still have it, otherwise a fresh one from the three steps above.'; st.className = 'status err'; return; }
     if (p1.length < 4) { st.textContent = 'pick a password of at least 4 characters.'; st.className = 'status err'; return; }
     if (p1 !== p2) { st.textContent = 'the two passwords do not match.'; st.className = 'status err'; return; }
     const btn = $('#sec-save'); btn.disabled = true; st.textContent = 'locking the token with that password…';
