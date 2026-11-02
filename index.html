@@ -73,7 +73,8 @@ footer a { color: var(--ink-soft); }
 .home { text-align: center; padding-block: clamp(32px, 9vh, 96px) 40px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .home .logo { width: min(420px, 82vw); }
 .wordmark { font-size: clamp(2.4rem, 8vw, 4.2rem); font-weight: 500; letter-spacing: -0.02em; margin: 0; line-height: 1; }
-.home-map-wrap { width: 100%; margin-top: 28px; text-align: left; display: flex; flex-direction: column; gap: 12px; }
+.home-map-wrap { width: 100%; max-width: 760px; margin: 28px auto 0; text-align: left; display: flex; flex-direction: column; gap: 12px; }
+.home-map-wrap .map-card svg { max-height: 48vh; }
 .map-card svg { max-height: 72vh; margin: 0 auto; }
 .detail.mini { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; padding: 14px 18px; }
 .detail.mini h2 { font-size: 1.15rem; margin: 0; }
