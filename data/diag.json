@@ -1,0 +1,18 @@
+{
+ "when": "2026-11-02T00:23:29.033Z",
+ "stage": "preview",
+ "by": "mimi",
+ "message": "ERR_LIBHEIF format not supported",
+ "status": null,
+ "body": null,
+ "stack": "",
+ "file": {
+  "name": "IMG_3849.HEIC",
+  "type": "image/heic",
+  "size": 1894795
+ },
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+ "bitmap": true,
+ "libheif": true,
+ "heic2any": true
+}
