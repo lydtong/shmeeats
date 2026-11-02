@@ -74,8 +74,11 @@ def safe_json(obj):
     return json.dumps(obj, separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/")
 
 tpl = open(here / "template.html", encoding="utf-8").read()
-html = (tpl.replace("__LOGO__", logo_uri)
+import time, hashlib
+build_id = time.strftime("%Y%m%d-%H%M%S")
+html = (tpl.replace("__BUILD__", build_id).replace("__LOGO__", logo_uri)
            .replace("__STATES__", safe_json(states))
            .replace("__CITIES__", safe_json(city_list)))
 open(out_path, "w", encoding="utf-8").write(html)
+open(pathlib.Path(out_path).parent / "data" / "build.txt", "w").write(build_id + "\n")
 print(f"states={len(states)} cities={len(city_list)} bytes={len(html.encode())}")

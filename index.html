@@ -459,6 +459,7 @@ textarea.tall { min-height: 180px; }
 (function () {
   'use strict';
   const $ = (s, el) => (el || document).querySelector(s);
+  const BUILD = '20261101-191324';
   const USERS = ['mimi', 'lydia'];
   const GH = { owner: 'lydtong', repo: 'shmeeats', branch: 'main', photoDir: 'photos', authPath: 'data/auth.json' };
   const KINDS = {
@@ -1447,6 +1448,20 @@ textarea.tall { min-height: 180px; }
     try {
       const d = JSON.parse(ssGet('shmee_draft') || 'null'); if (!d) return;
       Object.keys(d).forEach((k) => { if ($('#' + k)) $('#' + k).value = d[k] || ''; });
+    } catch (e) {}
+  })();
+
+  // ---------- stale copy check ----------
+  // github pages caches the page for ten minutes; if a newer build exists, fetch it past the cache and reload once
+  (async () => {
+    try {
+      const res = await fetch('data/build.txt?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) return;
+      const live = (await res.text()).trim();
+      if (!live || live === BUILD || ssGet('shmee_reloaded') === live) return;
+      ssSet('shmee_reloaded', live);
+      await fetch(location.pathname, { cache: 'reload' });
+      location.reload();
     } catch (e) {}
   })();
 
