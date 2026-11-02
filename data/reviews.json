@@ -39,14 +39,20 @@
    "state": "PA",
    "lat": 39.94718,
    "lng": -75.15947,
-   "ate": "",
-   "with": "",
-   "score": null,
-   "notes": "",
-   "date": "2026-11-02",
+   "ate": "7 Layer Chocolate Cake\n- coffee, sea salt",
+   "with": "Lydia",
+   "score": 7,
+   "notes": "A little salty and I wish it were sweeter😝",
+   "date": "2026-10-14",
    "by": "mimi",
-   "photos": [],
-   "created": 1793580446955
+   "photos": [
+    {
+     "id": "rmvyjhlu0yv0w-mvyjmcy00",
+     "caption": ""
+    }
+   ],
+   "created": 1793580446955,
+   "updated": 1793580672251
   }
  ]
 }
