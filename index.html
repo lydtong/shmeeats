@@ -146,16 +146,31 @@ footer a { color: var(--ink-soft); }
 .list h2 { font-size: 1.1rem; font-weight: 600; margin: 0 0 10px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
-.card:hover, .card.open { border-color: var(--accent); }
-.card.open { grid-column: 1 / -1; }
-.card-head { display: flex; flex-direction: column; gap: 2px; width: 100%; text-align: left; border: 0; background: none; padding: 12px 14px; border-radius: 12px; }
+.card:hover { border-color: var(--accent); }
+.card-head { display: flex; flex-direction: column; gap: 2px; width: 100%; text-align: left; border: 0; background: none; padding: 12px 14px; border-radius: 12px; cursor: pointer; }
 .card-head .name { font-weight: 600; }
 .card-head .sub { color: var(--ink-soft); font-size: 0.88rem; }
 .card-head .score .big { font-size: 1.1rem; }
 .card-head .scores { gap: 10px; }
 .card-head .tap { color: var(--ink-soft); font-size: 0.78rem; margin-top: 4px; }
-.card.open .card-head .tap { display: none; }
 .card-body { padding: 0 16px 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+
+/* popup for one place or dish */
+.modal-bg { position: fixed; inset: 0; background: rgba(28, 59, 44, 0.45); z-index: 900; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { background: var(--surface); border-radius: var(--radius); box-shadow: 0 24px 60px rgba(28, 59, 44, 0.25); width: min(720px, 100%); max-height: 90vh; overflow: auto; position: relative; }
+.modal .modal-head { padding: 20px 56px 10px 22px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; }
+.modal .modal-head .name { font-weight: 600; font-size: 1.35rem; letter-spacing: -0.01em; }
+.modal .modal-head .sub { color: var(--ink-soft); }
+.modal .modal-head .score .big { font-size: 1.5rem; }
+.modal .card-body { border-top: 0; padding: 14px 22px 22px; }
+.modal .close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border: 0; border-radius: 999px; background: var(--surface-2); color: var(--ink); font-size: 1.2rem; line-height: 1; }
+.modal .close:hover { background: var(--accent-soft); }
+@media (max-width: 620px) {
+  .modal-bg { padding: 0; align-items: stretch; }
+  .modal { width: 100%; max-height: 100%; border-radius: 0; padding-top: env(safe-area-inset-top, 0px); }
+  .modal .close { top: calc(12px + env(safe-area-inset-top, 0px)); }
+}
+body.modal-open { overflow: hidden; }
 .card-body p { margin: 0 0 8px; }
 .card-body .addr { color: var(--ink-soft); font-size: 0.9rem; }
 .card-body .ate, .card-body .recipe, .card-body .notes { white-space: pre-wrap; }
@@ -497,7 +512,7 @@ textarea.tall { min-height: 180px; }
 (function () {
   'use strict';
   const $ = (s, el) => (el || document).querySelector(s);
-  const BUILD = '20261101-212544';
+  const BUILD = '20261101-214243';
   const USERS = ['mimi', 'lydia'];
   const GH = { owner: 'lydtong', repo: 'shmeeats', branch: 'main', photoDir: 'photos', authPath: 'data/auth.json' };
   const KINDS = {
@@ -845,7 +860,7 @@ textarea.tall { min-height: 180px; }
     if (view === 'cooking') renderCooking();
     if (view === 'admin') renderAdmin();
     window.scrollTo({ top: 0 });
-    if (pendingOpen) { const po = pendingOpen; pendingOpen = null; openCard(po.kind, po.id); }
+    if (pendingOpen) { const po = pendingOpen; pendingOpen = null; setTimeout(() => openCard(po.kind, po.id), 50); }
   }
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[data-view]');
@@ -967,26 +982,42 @@ textarea.tall { min-height: 180px; }
       '<a href="#food" data-view="food" data-review="' + esc(r.id) + '">read the review →</a>';
   }
 
-  // ---------- expandable cards (shared by reviews + cooking) ----------
-  const openCards = { food: new Set(), cooking: new Set() };
-  function cardHtml(kind, r, head, body) {
-    const open = openCards[kind].has(r.id);
-    return '<article class="card' + (open ? ' open' : '') + '" data-kind="' + kind + '" data-id="' + esc(r.id) + '">' +
-      '<button type="button" class="card-head" aria-expanded="' + open + '">' + head + '<span class="tap">' + (open ? '' : 'tap for more') + '</span></button>' +
-      '<div class="card-body"' + (open ? '' : ' hidden') + '>' + (open ? body : '') + '</div></article>';
+  // ---------- cards open a popup (shared by reviews + cooking) ----------
+  function cardHtml(kind, r, head) {
+    return '<article class="card" data-kind="' + kind + '" data-id="' + esc(r.id) + '">' +
+      '<button type="button" class="card-head">' + head + '<span class="tap">tap for more</span></button></article>';
   }
   document.addEventListener('click', (e) => {
     const h = e.target.closest('.card-head'); if (!h) return;
-    const card = h.closest('.card'); const kind = card.dataset.kind, id = card.dataset.id;
-    if (openCards[kind].has(id)) openCards[kind].delete(id); else openCards[kind].add(id);
-    if (kind === 'food') { selectedId = openCards.food.has(id) ? id : null; renderFood(); } else renderCooking();
+    const card = h.closest('.card');
+    openCard(card.dataset.kind, card.dataset.id);
   });
-  function openCard(kind, id) {
-    openCards[kind].add(id);
-    if (kind === 'food') { selectedId = id; renderFood(); } else renderCooking();
-    const el = document.querySelector('.card[data-kind="' + kind + '"][data-id="' + CSS.escape(id) + '"]');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  let modalEl = null, modalReturn = null;
+  function closeModal() {
+    if (!modalEl) return;
+    modalEl.remove(); modalEl = null;
+    document.body.classList.remove('modal-open');
+    if (modalReturn && modalReturn.focus) modalReturn.focus();
+    modalReturn = null;
   }
+  function openCard(kind, id) {
+    const r = listOf(kind).find((x) => x.id === id);
+    if (!r) return;
+    if (kind === 'food' && selectedId !== id) { selectedId = id; renderFood(); }
+    closeModal();
+    modalReturn = document.activeElement;
+    const bg = document.createElement('div'); bg.className = 'modal-bg';
+    bg.innerHTML = '<div class="modal" role="dialog" aria-modal="true" aria-label="' + esc(r.name) + '">' +
+      '<button type="button" class="close" aria-label="close">×</button>' +
+      '<div class="modal-head">' + (kind === 'food' ? reviewHead(r) : dishHead(r)) + '</div>' +
+      '<div class="card-body">' + (kind === 'food' ? reviewBody(r) : dishBody(r)) + '</div></div>';
+    bg.addEventListener('click', (e) => { if (e.target === bg || e.target.closest('.close')) closeModal(); });
+    document.body.appendChild(bg);
+    document.body.classList.add('modal-open');
+    modalEl = bg;
+    bg.querySelector('.close').focus();
+  }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalEl && !document.querySelector('.lightbox')) closeModal(); });
 
   // ---------- reviews page ----------
   let foodMap = null, selectedId = null;
@@ -1043,7 +1074,7 @@ textarea.tall { min-height: 180px; }
     $('#food-top').querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => openCard('food', b.dataset.open)));
     const cards = $('#food-cards');
     if (!list.length) { cards.innerHTML = '<div class="empty-state">' + (DATA.loaded ? (filtering ? 'nothing matches that filter.' : 'nothing logged yet. the cats are hungry.') : 'loading…') + '</div>'; return; }
-    cards.innerHTML = list.map((r) => cardHtml('food', r, reviewHead(r), reviewBody(r))).join('');
+    cards.innerHTML = list.map((r) => cardHtml('food', r, reviewHead(r))).join('');
   }
 
   // ---------- home cooking page ----------
@@ -1066,7 +1097,7 @@ textarea.tall { min-height: 180px; }
     $('#cook-count').textContent = list.length ? list.length + (list.length === 1 ? ' dish' : ' dishes') : '';
     const cards = $('#cook-cards');
     if (!list.length) { cards.innerHTML = '<div class="empty-state">' + (DATA.loaded ? 'nothing cooked yet. the kitchen is quiet.' : 'loading…') + '</div>'; return; }
-    cards.innerHTML = list.map((r) => cardHtml('cooking', r, dishHead(r), dishBody(r))).join('');
+    cards.innerHTML = list.map((r) => cardHtml('cooking', r, dishHead(r))).join('');
   }
 
   // ---------- admin ----------
