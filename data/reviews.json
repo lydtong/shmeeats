@@ -95,6 +95,44 @@
    "by": "mimi",
    "photos": [],
    "created": 1793587917647
+  },
+  {
+   "id": "rmvzsuqz03pnl",
+   "name": "Kalaya",
+   "address": "4 West Palmer Street, Philadelphia, PA 19125",
+   "place": "Philadelphia, PA",
+   "state": "PA",
+   "lat": 39.97563,
+   "lng": -75.13309,
+   "ate": "Shaw Muang\n- five flower-shaped dumplings with ground chicken, cucumber and thai chili\n\nGui Chai\n- crispy garlic chive rice cakes with spicy sweet soy sauce\n\nPla Muk Thod Kreung \n- fried curry squid with long hots, lime leaf and nam jim waan\n\nGaeng Gai Khao Mun \n- yellow curry with chicken, served with pickled cucumbers and coconut turmeric rice\n\nSua Rong Hai\n- grilled skirt steak with jaew pla ra, served with sticky rice and crudité\n\nYum Makhua Yao\n- marinated eggplant with mint, galangal, fried shallots and prik nam pla\n\nMoo Tod Nam Pla\n- crispy pork belly with fish sauce, served with jaew\n\nPassionfruit Coconut Shaved Ice",
+   "with": "Lydia",
+   "cuisines": [
+    "thai"
+   ],
+   "occasions": [
+    "date night",
+    "dinner",
+    "with family"
+   ],
+   "score": 8.5,
+   "notes": "So so good!\n\nThe fried curry squid and skirt steak were my favorite. \n\nThe sticky rice was a bit dry. Lydia has had better. We wished we had knives. The skirt steak slices were a little long to be eating without a knife. The pork belly was also a little dry and too sweet. \n\n#lovethaifood",
+   "date": "2026-07-18",
+   "by": "mimi",
+   "photos": [
+    {
+     "id": "rmvzsuqz03pnl-mvzsuqz00",
+     "caption": ""
+    },
+    {
+     "id": "rmvzsuqz03pnl-mvzsuu011",
+     "caption": "Passionfruit Coconut Shaved Ice"
+    },
+    {
+     "id": "rmvzsuqz03pnl-mvzsuw5v2",
+     "caption": "Fried Curry Squid"
+    }
+   ],
+   "created": 1793656652084
   }
  ]
 }
