@@ -685,6 +685,7 @@ textarea.tall { min-height: 180px; }
   // heic/heif: safari reads it natively; other browsers get a converter loaded on demand
   const looksHeic = (file) => /heic|heif/i.test(file.type || '') || /\.(heic|heif)$/i.test(file.name || '');
   const scriptLoads = {};
+  let libheifReady = null;
   function loadScript(url, getGlobal) {
     if (!scriptLoads[url]) scriptLoads[url] = new Promise((resolve, reject) => {
       if (getGlobal()) return resolve(getGlobal());
@@ -703,7 +704,9 @@ textarea.tall { min-height: 180px; }
   const canvasJpeg = (c, q) => new Promise((resolve, reject) => c.toBlob((b) => (b ? resolve(b) : reject(new Error('image too large for this browser'))), 'image/jpeg', q));
   // converter 1: libheif (current, handles the 10-bit hdr heic newer iphones make)
   async function heicViaLibheif(file) {
-    const libheif = await loadScript('https://cdn.jsdelivr.net/npm/libheif-js@1.19.8/libheif-wasm/libheif-bundle.js', () => window.libheif);
+    let libheif = await loadScript('https://cdn.jsdelivr.net/npm/libheif-js@1.23.5/libheif-wasm/libheif-bundle.js', () => window.libheif);
+    if (typeof libheif === 'function') { if (!libheifReady) libheifReady = libheif(); libheif = await libheifReady; }
+    if (!libheif.HeifDecoder) throw new Error('libheif has no decoder');
     const decoder = new libheif.HeifDecoder();
     const images = decoder.decode(await file.arrayBuffer());
     if (!images || !images.length) throw new Error('no picture inside the heic');
@@ -727,12 +730,12 @@ textarea.tall { min-height: 180px; }
   async function normalizeFile(file) {
     if (!looksHeic(file) && (file.type || '').startsWith('image/')) return file;
     if (await nativeDecodes(file)) return file;
-    let lastErr = null;
+    const errs = [];
     for (const conv of [heicViaLibheif, heicViaHeic2any]) {
-      try { const out = await conv(file); if (await nativeDecodes(out)) return out; lastErr = new Error('converted file unreadable'); }
-      catch (e) { lastErr = e; }
+      try { const out = await conv(file); if (await nativeDecodes(out)) return out; errs.push(conv.name + ': converted file unreadable'); }
+      catch (e) { errs.push(conv.name + ': ' + ((e && (e.message || e.code)) || String(e))); }
     }
-    throw lastErr || new Error('could not convert heic');
+    throw new Error(errs.join(' | '));
   }
   async function decodeImage(file) {
     if (looksHeic(file)) file = await normalizeFile(file);
