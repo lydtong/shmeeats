@@ -30,6 +30,23 @@
    ],
    "created": 1793576447021,
    "updated": 1793579715861
+  },
+  {
+   "id": "rmvyjhlu0yv0w",
+   "name": "Middle Child Clubhouse",
+   "address": "1232 N Front St, Philadelphia, PA 19122",
+   "place": "Philadelphia, PA",
+   "state": "PA",
+   "lat": 39.94718,
+   "lng": -75.15947,
+   "ate": "",
+   "with": "",
+   "score": null,
+   "notes": "",
+   "date": "2026-11-02",
+   "by": "mimi",
+   "photos": [],
+   "created": 1793580446955
   }
  ]
 }
