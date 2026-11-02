@@ -29,9 +29,16 @@
     }
    ],
    "created": 1793576447021,
-   "updated": 1793586281341,
-   "cuisine": "lebanese",
-   "occasion": ""
+   "updated": 1793586780363,
+   "cuisines": [
+    "lebanese"
+   ],
+   "occasions": [
+    "dinner",
+    "date night",
+    "with family",
+    "birthday"
+   ]
   },
   {
    "id": "rmvyjhlu0yv0w",
