@@ -652,6 +652,25 @@ textarea.tall { min-height: 180px; }
     await deleteFile(GH.photoDir + '/' + id + '.jpg', 'remove photo ' + id);
     await deleteFile(GH.photoDir + '/' + id + '-t.jpg', 'remove thumb ' + id);
   }
+  // when a photo fails, write a short note about it into the repo so the problem can be looked at later
+  let diagBusy = false;
+  async function reportProblem(stage, err, file) {
+    if (!token() || diagBusy) return;
+    diagBusy = true;
+    try {
+      const note = {
+        when: new Date().toISOString(), stage, by: admin || '',
+        message: (err && (err.message || err.code || String(err))) || 'unknown', status: err && err.status || null,
+        body: err && err.body && err.body.message || null, stack: (err && err.stack || '').slice(0, 600),
+        file: file ? { name: file.name, type: file.type, size: file.size } : null,
+        ua: navigator.userAgent, bitmap: !!window.createImageBitmap, libheif: !!window.libheif, heic2any: !!window.heic2any,
+      };
+      let sha; try { const f = await gh('contents/data/diag.json?ref=' + GH.branch, { allow404: true }); if (f) sha = f.sha; } catch (e) {}
+      const body = { message: 'photo problem: ' + stage, branch: GH.branch, content: b64FromText(JSON.stringify(note, null, 1)) };
+      if (sha) body.sha = sha;
+      await gh('contents/data/diag.json', { method: 'PUT', body: JSON.stringify(body) });
+    } catch (e) {} finally { diagBusy = false; }
+  }
   function ghErrorText(e) {
     const code = e && e.code, st = e && e.status;
     if (code === 'no_token') return 'log in again; this tab lost the github token.';
@@ -1216,7 +1235,7 @@ textarea.tall { min-height: 180px; }
             const small = await shrink(im, 360, 0.75);
             freeImage(im);
             p.url = URL.createObjectURL(small);
-          } catch (err) { p.url = ''; p.failed = true; p.why = (err && (err.message || String(err))) || 'unknown'; console.warn('photo preview failed', err); }
+          } catch (err) { p.url = ''; p.failed = true; p.why = (err && (err.message || String(err))) || 'unknown'; console.warn('photo preview failed', err); reportProblem('preview', err, p.file); }
           const box = gridEl.querySelector('.thumb[data-key="' + p.key + '"]');
           if (!box) continue;
           const ph = box.querySelector('.ph-wait'); if (ph) ph.remove();
@@ -1255,6 +1274,7 @@ textarea.tall { min-height: 180px; }
             await uploadPhoto(id, st.pending[i].file);
             out.push({ id, caption: st.pending[i].caption.trim() });
           } catch (err) {
+            reportProblem('upload', err, st.pending[i].file);
             if (err && err.status) throw err; // github refused: stop, that is a real save error
             this.skipped++; console.warn('photo skipped', err);
           }
