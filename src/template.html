@@ -114,6 +114,15 @@ footer a { color: var(--ink-soft); }
 .score .who { font-size: 0.8rem; color: var(--ink-soft); font-weight: 500; margin-right: 2px; }
 .scores { display: flex; gap: 14px; flex-wrap: wrap; }
 
+/* filters + tags */
+.filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 0 0 14px; }
+.filters select { width: auto; padding: 7px 32px 7px 12px; border-radius: 999px; background-color: var(--surface); font-weight: 600; color: var(--ink); appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%235c7a69' stroke-width='1.8'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.filters select.on { background-color: var(--accent-soft); }
+.filters .clear { border: 0; background: none; color: var(--accent); font-weight: 600; padding: 6px 8px; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.tag { font-size: 0.78rem; font-weight: 600; color: var(--ink-soft); background: var(--surface-2); border-radius: 999px; padding: 2px 9px; }
+.other-in { margin-top: 6px; }
+
 /* top 5 */
 .top5 { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; min-width: 0; }
 .top5 h2 { margin: 0 0 8px; font-size: 1.1rem; font-weight: 600; }
@@ -268,6 +277,16 @@ textarea.tall { min-height: 180px; }
     </div>
     <div class="list">
       <h2>every place so far</h2>
+      <div class="filters">
+        <select id="flt-cuisine" aria-label="cuisine"></select>
+        <select id="flt-occasion" aria-label="occasion"></select>
+        <select id="flt-sort" aria-label="sort">
+          <option value="new">newest first</option>
+          <option value="score">highest score</option>
+          <option value="name">a to z</option>
+        </select>
+        <button type="button" class="clear" id="flt-clear" hidden>clear</button>
+      </div>
       <div id="food-cards" class="cards"></div>
     </div>
   </section>
@@ -355,7 +374,19 @@ textarea.tall { min-height: 180px; }
               <span class="hint" id="loc-hint">set by the restaurant pick, or type a city, or tap the map</span>
             </div>
             <div class="mini-map" id="admin-map"></div>
-            <div class="field" style="margin-top:12px">
+            <div class="row" style="margin-top:12px">
+              <div class="field">
+                <label for="f-cuisine">cuisine</label>
+                <select id="f-cuisine"></select>
+                <input id="f-cuisine-other" class="other-in" type="text" placeholder="type the cuisine" hidden>
+              </div>
+              <div class="field">
+                <label for="f-occasion">occasion</label>
+                <select id="f-occasion"></select>
+                <input id="f-occasion-other" class="other-in" type="text" placeholder="type the occasion" hidden>
+              </div>
+            </div>
+            <div class="field">
               <label for="f-ate">what we ate</label>
               <textarea id="f-ate"></textarea>
             </div>
@@ -467,6 +498,22 @@ textarea.tall { min-height: 180px; }
     cooking: { path: 'data/dishes.json', key: 'dishes', label: 'dish', noun: 'dish' },
   };
   const SVGNS = 'http://www.w3.org/2000/svg';
+  const PRESETS = {
+    cuisine: ['american', 'bakery', 'bbq', 'burgers', 'caribbean', 'chinese', 'dessert', 'ethiopian', 'filipino', 'french', 'greek', 'indian', 'italian', 'japanese', 'korean', 'lebanese', 'mediterranean', 'mexican', 'middle eastern', 'pizza', 'ramen', 'seafood', 'southern', 'spanish', 'sushi', 'taiwanese', 'thai', 'turkish', 'vegan', 'vietnamese'],
+    occasion: ['cafe', 'brunch', 'lunch', 'dinner', 'date night', 'fancy', 'casual', 'quick bite', 'late night', 'takeout', 'drinks', 'dessert run', 'birthday', 'with friends', 'with family', 'road trip'],
+  };
+  const OTHER = '__other__';
+  const normTag = (v) => String(v || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  // presets plus anything already used in the reviews, alphabetical
+  function tagOptions(kind) {
+    const set = new Set(PRESETS[kind]);
+    DATA.reviews.forEach((r) => { const v = normTag(r[kind]); if (v) set.add(v); });
+    return Array.from(set).sort();
+  }
+  function tagsHtml(r) {
+    const t = [normTag(r.cuisine), normTag(r.occasion)].filter(Boolean);
+    return t.length ? '<span class="tags">' + t.map((x) => '<span class="tag">' + esc(x) + '</span>').join('') + '</span>' : '';
+  }
   const STATE_ABBR = { 'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR', 'California': 'CA', 'Colorado': 'CO', 'Connecticut': 'CT', 'Delaware': 'DE', 'District of Columbia': 'DC', 'Florida': 'FL', 'Georgia': 'GA', 'Hawaii': 'HI', 'Idaho': 'ID', 'Illinois': 'IL', 'Indiana': 'IN', 'Iowa': 'IA', 'Kansas': 'KS', 'Kentucky': 'KY', 'Louisiana': 'LA', 'Maine': 'ME', 'Maryland': 'MD', 'Massachusetts': 'MA', 'Michigan': 'MI', 'Minnesota': 'MN', 'Mississippi': 'MS', 'Missouri': 'MO', 'Montana': 'MT', 'Nebraska': 'NE', 'Nevada': 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ', 'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', 'Ohio': 'OH', 'Oklahoma': 'OK', 'Oregon': 'OR', 'Pennsylvania': 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC', 'South Dakota': 'SD', 'Tennessee': 'TN', 'Texas': 'TX', 'Utah': 'UT', 'Vermont': 'VT', 'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY' };
   const abbrState = (s) => { if (!s) return ''; if (/^[A-Z]{2}$/.test(s)) return s; return STATE_ABBR[s] || s; };
 
@@ -930,9 +977,27 @@ textarea.tall { min-height: 180px; }
 
   // ---------- reviews page ----------
   let foodMap = null, selectedId = null;
+  const filt = { cuisine: '', occasion: '', sort: 'new' };
+  function fillFilter(sel, kind, label) {
+    const cur = filt[kind];
+    const used = new Set(); DATA.reviews.forEach((r) => { const v = normTag(r[kind]); if (v) used.add(v); });
+    const opts = Array.from(used).sort();
+    sel.innerHTML = '<option value="">' + label + '</option>' + opts.map((v) => '<option value="' + esc(v) + '"' + (v === cur ? ' selected' : '') + '>' + esc(v) + '</option>').join('');
+    if (cur && !used.has(cur)) { filt[kind] = ''; }
+    sel.classList.toggle('on', !!filt[kind]);
+  }
+  function filteredReviews() {
+    let list = DATA.reviews.filter((r) => (!filt.cuisine || normTag(r.cuisine) === filt.cuisine) && (!filt.occasion || normTag(r.occasion) === filt.occasion));
+    if (filt.sort === 'score') list.sort((a, b) => ((scoreOf(b) == null ? -1 : scoreOf(b)) - (scoreOf(a) == null ? -1 : scoreOf(a))) || byDate(a, b));
+    else if (filt.sort === 'name') list.sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' }));
+    else list.sort(byDate);
+    return list;
+  }
+  ['cuisine', 'occasion', 'sort'].forEach((k) => $('#flt-' + k).addEventListener('change', (e) => { filt[k] = e.target.value; renderFood(); }));
+  $('#flt-clear').addEventListener('click', () => { filt.cuisine = ''; filt.occasion = ''; filt.sort = 'new'; $('#flt-sort').value = 'new'; renderFood(); });
   function reviewHead(r) {
     return '<span class="name">' + esc(r.name) + '</span>' +
-      '<span class="sub">' + esc(r.place || '') + (r.date ? ' · ' + esc(fmtDate(r.date)) : '') + '</span>' + scoreTag(scoreOf(r));
+      '<span class="sub">' + esc(r.place || '') + (r.date ? ' · ' + esc(fmtDate(r.date)) : '') + '</span>' + scoreTag(scoreOf(r)) + tagsHtml(r);
   }
   function reviewBody(r) {
     return (r.address ? '<p class="addr"><strong>address:</strong> ' + esc(r.address) + '</p>' : '') +
@@ -943,22 +1008,28 @@ textarea.tall { min-height: 180px; }
       '<div class="meta">' + (r.date ? esc(fmtDate(r.date)) : '') + (r.by ? ' · logged by ' + esc(r.by) : '') + '</div>';
   }
   function renderFood() {
-    const list = sortedReviews();
+    fillFilter($('#flt-cuisine'), 'cuisine', 'all cuisines');
+    fillFilter($('#flt-occasion'), 'occasion', 'all occasions');
+    const filtering = !!(filt.cuisine || filt.occasion);
+    $('#flt-clear').hidden = !filtering && filt.sort === 'new';
+    const list = filteredReviews();
+    const all = DATA.reviews.length;
     const states = new Set();
     list.forEach((r) => { if (r.state) states.add(r.state); });
-    $('#food-count').textContent = list.length
-      ? list.length + (list.length === 1 ? ' place' : ' places') + (states.size ? ' · ' + states.size + (states.size === 1 ? ' state' : ' states') : '')
+    $('#food-count').textContent = all
+      ? (filtering ? list.length + ' of ' + all + ' places' : all + (all === 1 ? ' place' : ' places')) + (states.size ? ' · ' + states.size + (states.size === 1 ? ' state' : ' states') : '')
       : '';
     if (!foodMap) foodMap = buildMap($('#food-map'), { zoomable: true, name: 'food' });
     placePins(foodMap, list, { selectedId, onSelect: (r) => openCard('food', r.id) });
     // top 5 by score
     const top = list.filter((r) => scoreOf(r) != null).sort((a, b) => scoreOf(b) - scoreOf(a)).slice(0, 5);
+    $('.top5 h2').textContent = filtering ? 'top 5 · ' + [filt.cuisine, filt.occasion].filter(Boolean).join(' · ') : 'top 5';
     $('#food-top').innerHTML = top.length
       ? top.map((r, i) => '<li><button type="button" data-open="' + esc(r.id) + '"><span class="rank">' + (i + 1) + '</span><span><span class="name">' + esc(r.name) + '</span><span class="sub">' + esc(r.place || '') + '</span></span>' + scoreTag(scoreOf(r)) + '</button></li>').join('')
       : '<li class="empty">' + (DATA.loaded ? 'no scores yet.' : 'loading…') + '</li>';
     $('#food-top').querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => openCard('food', b.dataset.open)));
     const cards = $('#food-cards');
-    if (!list.length) { cards.innerHTML = '<div class="empty-state">' + (DATA.loaded ? 'nothing logged yet. the cats are hungry.' : 'loading…') + '</div>'; return; }
+    if (!list.length) { cards.innerHTML = '<div class="empty-state">' + (DATA.loaded ? (filtering ? 'nothing matches that filter.' : 'nothing logged yet. the cats are hungry.') : 'loading…') + '</div>'; return; }
     cards.innerHTML = list.map((r) => cardHtml('food', r, reviewHead(r), reviewBody(r))).join('');
   }
 
@@ -1008,6 +1079,7 @@ textarea.tall { min-height: 180px; }
     if (!$('#d-date').value && !dish.editingId) $('#d-date').value = today();
     updatePreviewPin();
     renderTabs();
+    if (!$('#f-cuisine').options.length) { setTag('cuisine', ''); setTag('occasion', ''); }
     renderAdminList();
     renderSetup();
     refreshFromGithub();
@@ -1295,6 +1367,31 @@ textarea.tall { min-height: 180px; }
     };
   }
 
+  // ---------- tag pickers (dropdown of presets + what has been used, or write in) ----------
+  function fillTagSelect(kind) {
+    const sel = $('#f-' + kind), cur = sel.value;
+    sel.innerHTML = '<option value="">none</option>' + tagOptions(kind).map((v) => '<option value="' + esc(v) + '">' + esc(v) + '</option>').join('') + '<option value="' + OTHER + '">write in…</option>';
+    sel.value = Array.from(sel.options).some((o) => o.value === cur) ? cur : '';
+  }
+  function setTag(kind, value) {
+    const v = normTag(value), sel = $('#f-' + kind), other = $('#f-' + kind + '-other');
+    fillTagSelect(kind);
+    if (!v) { sel.value = ''; other.hidden = true; other.value = ''; return; }
+    if (Array.from(sel.options).some((o) => o.value === v)) { sel.value = v; other.hidden = true; other.value = ''; }
+    else { sel.value = OTHER; other.hidden = false; other.value = v; }
+  }
+  function readTag(kind) {
+    const sel = $('#f-' + kind);
+    return normTag(sel.value === OTHER ? $('#f-' + kind + '-other').value : sel.value);
+  }
+  ['cuisine', 'occasion'].forEach((kind) => {
+    $('#f-' + kind).addEventListener('change', (e) => {
+      const other = $('#f-' + kind + '-other');
+      other.hidden = e.target.value !== OTHER;
+      if (!other.hidden) other.focus();
+    });
+  });
+
   // ---------- the two forms ----------
   function makeStatus(sel) { return (msg, err) => { const s = $(sel); s.textContent = msg; s.className = 'status' + (err ? ' err' : ''); }; }
   const newId = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -1304,6 +1401,7 @@ textarea.tall { min-height: 180px; }
   function resetFood() {
     food.editingId = null;
     FOOD_FIELDS.forEach((id) => { $('#' + id).value = ''; });
+    setTag('cuisine', ''); setTag('occasion', '');
     $('#f-date').value = today();
     $('#form-title').textContent = 'new review';
     $('#f-cancel').hidden = true;
@@ -1318,6 +1416,7 @@ textarea.tall { min-height: 180px; }
     $('#f-name').value = r.name || ''; $('#f-address').value = r.address || ''; $('#f-city').value = r.place || '';
     $('#f-ate').value = r.ate || ''; $('#f-with').value = r.with || ''; $('#f-notes').value = r.notes || ''; $('#f-date').value = r.date || '';
     const s = scoreOf(r); $('#f-score').value = s == null ? '' : fmtScore(s);
+    setTag('cuisine', r.cuisine); setTag('occasion', r.occasion);
     food.photos.load(photosOf(r));
     if (r.lat && r.lng) setLocation(Number(r.lat), Number(r.lng), null);
     $('#form-title').textContent = 'editing ' + (r.name || '');
@@ -1336,6 +1435,7 @@ textarea.tall { min-height: 180px; }
       place, state: stm ? stm[1] : '',
       lat: Number($('#f-lat').value), lng: Number($('#f-lng').value),
       ate: $('#f-ate').value.trim(), with: $('#f-with').value.trim(),
+      cuisine: readTag('cuisine'), occasion: readTag('occasion'),
       score: clampScore($('#f-score').value), notes: $('#f-notes').value.trim(), date: $('#f-date').value, by: admin,
     };
     if (!r.name) { food.status('give it a name first.', true); return; }
@@ -1411,7 +1511,7 @@ textarea.tall { min-height: 180px; }
     if (!list.length) { el.innerHTML = '<div class="empty-state">' + (DATA.loaded ? 'nothing yet. log the first one!' : 'loading…') + '</div>'; return; }
     el.innerHTML = list.map((r) => {
       const sub = kind === 'food'
-        ? esc(r.place || '') + (r.date ? ' · ' + esc(fmtDate(r.date)) : '')
+        ? [esc(r.place || ''), r.date ? esc(fmtDate(r.date)) : '', esc(normTag(r.cuisine)), esc(normTag(r.occasion))].filter(Boolean).join(' · ')
         : [num(r.scoreMimi) != null ? 'mimi ' + fmtScore(num(r.scoreMimi)) : '', num(r.scoreLydia) != null ? 'lydia ' + fmtScore(num(r.scoreLydia)) : '', r.date ? esc(fmtDate(r.date)) : ''].filter(Boolean).join(' · ');
       const sc = kind === 'food' && scoreOf(r) != null ? ' <span class="s">' + fmtScore(scoreOf(r)) + ' / 10</span>' : '';
       return '<div class="admin-item" data-id="' + esc(r.id) + '">' +
