@@ -61,7 +61,15 @@
     }
    ],
    "created": 1793580446955,
-   "updated": 1793580699155
+   "updated": 1793586803788,
+   "cuisines": [
+    "american"
+   ],
+   "occasions": [
+    "brunch",
+    "drinks",
+    "with friends"
+   ]
   }
  ]
 }
