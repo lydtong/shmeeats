@@ -459,7 +459,7 @@ textarea.tall { min-height: 180px; }
 (function () {
   'use strict';
   const $ = (s, el) => (el || document).querySelector(s);
-  const BUILD = '20261101-191324';
+  const BUILD = '20261101-191358';
   const USERS = ['mimi', 'lydia'];
   const GH = { owner: 'lydtong', repo: 'shmeeats', branch: 'main', photoDir: 'photos', authPath: 'data/auth.json' };
   const KINDS = {
@@ -1220,13 +1220,19 @@ textarea.tall { min-height: 180px; }
     let seq = 0;
     inputEl.addEventListener('change', (e) => {
       const files = Array.from(e.target.files);
-      e.target.value = '';
       const added = files.map((f) => ({ file: f, url: '', key: 'p' + (++seq), caption: '' }));
       st.pending.push(...added);
       render();
-      // previews are made one at a time so a phone does not choke decoding six photos at once
       (async () => {
+        // iphones hand over temporary files that can vanish once the picker is reset, so copy the bytes first
         for (const p of added) {
+          try { const buf = await p.file.arrayBuffer(); p.file = new File([buf], p.file.name || 'photo', { type: p.file.type || '' }); }
+          catch (err) { p.failed = true; p.why = 'could not read the file from the phone (' + ((err && err.message) || 'unknown') + ')'; reportProblem('copy', err, p.file); }
+        }
+        inputEl.value = '';
+        // previews are made one at a time so a phone does not choke decoding six photos at once
+        for (const p of added) {
+          if (p.failed) { const box0 = gridEl.querySelector('.thumb[data-key="' + p.key + '"] .ph-wait'); if (box0) box0.textContent = 'could not read this one (' + p.why + ')'; continue; }
           try {
             if (looksHeic(p.file)) {
               const w = gridEl.querySelector('.thumb[data-key="' + p.key + '"] .ph-wait'); if (w) w.textContent = 'converting heic…';
