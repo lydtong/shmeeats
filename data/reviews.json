@@ -212,6 +212,35 @@
     }
    ],
    "created": 1793657848637
+  },
+  {
+   "id": "rmvztr7aqc3ke",
+   "name": "E.Z. Orchards",
+   "address": "Hazelgreen Road Northeast, Marion, OR 97305",
+   "place": "Marion, OR",
+   "state": "OR",
+   "lat": 45.00455,
+   "lng": -122.94777,
+   "ate": "Strawberry Shortcake\n\nStrawberry Shake\n\nStrawberry Donuts",
+   "with": "",
+   "cuisines": [
+    "dessert"
+   ],
+   "occasions": [
+    "dessert run",
+    "road trip"
+   ],
+   "score": 9.5,
+   "notes": "We try and stop here every single time we drive through Oregon. It is 100% worth the drive!! \n\nSadly only open during strawberry season :(",
+   "date": "2025-06-27",
+   "by": "mimi",
+   "photos": [
+    {
+     "id": "rmvztr7aqc3ke-mvztr7aq0",
+     "caption": ""
+    }
+   ],
+   "created": 1793658160166
   }
  ]
 }
