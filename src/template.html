@@ -145,7 +145,7 @@ footer a { color: var(--ink-soft); }
 .card-body p { margin: 0 0 8px; }
 .card-body .addr { color: var(--ink-soft); font-size: 0.9rem; }
 .card-body .ate, .card-body .recipe, .card-body .notes { white-space: pre-wrap; }
-.card-body strong { font-weight: 600; }
+.card-body strong { font-weight: 700; }
 .card-body .meta { color: var(--ink-soft); font-size: 0.85rem; margin-top: 10px; }
 .photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
 .photos figure { margin: 0; display: flex; flex-direction: column; gap: 4px; }
@@ -935,10 +935,10 @@ textarea.tall { min-height: 180px; }
       '<span class="sub">' + esc(r.place || '') + (r.date ? ' · ' + esc(fmtDate(r.date)) : '') + '</span>' + scoreTag(scoreOf(r));
   }
   function reviewBody(r) {
-    return (r.address ? '<p class="addr">' + esc(r.address) + '</p>' : '') +
+    return (r.address ? '<p class="addr"><strong>address:</strong> ' + esc(r.address) + '</p>' : '') +
       (r.ate ? '<p class="ate"><strong>we ate:</strong>' + (r.ate.includes('\n') ? '\n' : ' ') + esc(r.ate) + '</p>' : '') +
       (r.with ? '<p class="with"><strong>mimi ate with:</strong> ' + esc(r.with) + '</p>' : '') +
-      (r.notes ? '<p class="notes">' + esc(r.notes) + '</p>' : '') +
+      (r.notes ? '<p class="notes"><strong>notes:</strong>' + (r.notes.includes('\n') ? '\n' : ' ') + esc(r.notes) + '</p>' : '') +
       photosHtml(photosOf(r)) +
       '<div class="meta">' + (r.date ? esc(fmtDate(r.date)) : '') + (r.by ? ' · logged by ' + esc(r.by) : '') + '</div>';
   }
@@ -973,7 +973,7 @@ textarea.tall { min-height: 180px; }
   }
   function dishBody(r) {
     return (r.recipe ? '<p class="recipe"><strong>recipe:</strong>\n' + esc(r.recipe) + '</p>' : '') +
-      (r.notes ? '<p class="notes">' + esc(r.notes) + '</p>' : '') +
+      (r.notes ? '<p class="notes"><strong>notes:</strong>' + (r.notes.includes('\n') ? '\n' : ' ') + esc(r.notes) + '</p>' : '') +
       photosHtml(photosOf(r)) +
       '<div class="meta">' + (r.date ? esc(fmtDate(r.date)) : '') + (r.by ? ' · logged by ' + esc(r.by) : '') + '</div>';
   }
